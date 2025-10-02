@@ -8,3 +8,4 @@
 - Günlük commit 8: Fri Oct  3 00:42:27 TST 2025
 - Günlük commit 9: Fri Oct  3 00:42:28 TST 2025
 - Günlük commit 10: Fri Oct  3 00:42:28 TST 2025
+// ufak katkı
