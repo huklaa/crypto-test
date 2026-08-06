@@ -22,3 +22,8 @@ const cryptoInfo = {
 };
 
 console.log(cryptoInfo);
+function getCryptoLabel(crypto) {
+  return `${crypto.name} (${crypto.symbol})`;
+}
+
+console.log(getCryptoLabel(cryptoInfo));
