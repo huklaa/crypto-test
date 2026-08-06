@@ -31,6 +31,4 @@ function getCryptoLabel(crypto) {
 }
 
 console.log(getCryptoLabel(cryptoInfo));
-const supportedCoins = ["BTC", "ETH", "SOL"];
 
-console.log("Desteklenen coinler:", supportedCoins);
