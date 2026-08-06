@@ -15,3 +15,10 @@ function showMessage(message) {
 }
 
 showMessage("İkinci mobil commit çalıştı");
+const cryptoInfo = {
+  name: "Bitcoin",
+  symbol: "BTC",
+  active: true
+};
+
+console.log(cryptoInfo);
