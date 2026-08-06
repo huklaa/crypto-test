@@ -10,3 +10,8 @@ console.log("Hello Web3");
 // Otomatik crypto commit 9 (Fri Oct  3 00:29:12 TST 2025)
 // Otomatik crypto commit 10 (Fri Oct  3 00:29:13 TST 2025)
 console.log("Mobil commit testi");
+function showMessage(message) {
+  console.log(message);
+}
+
+showMessage("İkinci mobil commit çalıştı");
