@@ -1,4 +1,6 @@
-const today = new Date();
+const supportedCoins = ["BTC", "ETH", "SOL"];
+
+console.log("Desteklenen coinler:", supportedCoins);const today = new Date();
 
 console.log("Tarih:", today.toLocaleDateString("tr-TR"));console.log("Hello Web3");
 // Otomatik crypto commit 1 (Fri Oct  3 00:29:07 TST 2025)
@@ -29,3 +31,6 @@ function getCryptoLabel(crypto) {
 }
 
 console.log(getCryptoLabel(cryptoInfo));
+const supportedCoins = ["BTC", "ETH", "SOL"];
+
+console.log("Desteklenen coinler:", supportedCoins);
