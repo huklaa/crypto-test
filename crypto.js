@@ -570,3 +570,9 @@ function buildCoinSummary(coin, currency = "USD") {
   var validCoin = validateCoin(coin);
   return validCoin.name + " (" + validCoin.symbol + "): " + formatCurrency(validCoin.price, currency);
 }
+
+
+function buildPortfolioSummary(holdings, currency = "USD") {
+  var total = calculatePortfolioTotal(holdings);
+  return { assetCount: holdings.length, total, formattedTotal: formatCurrency(total, currency) };
+}
