@@ -391,3 +391,8 @@ function getTopGainers(coins, limit = 5) {
 function getTopLosers(coins, limit = 5) {
   return [...coins].filter(coin => Number.isFinite(coin.change24h)).sort((a, b) => a.change24h - b.change24h).slice(0, limit);
 }
+
+
+function getHighestVolumeCoins(coins, limit = 5) {
+  return [...coins].filter(coin => Number.isFinite(coin.volume24h)).sort((a, b) => b.volume24h - a.volume24h).slice(0, limit);
+}
