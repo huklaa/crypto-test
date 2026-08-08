@@ -448,3 +448,9 @@ function calculateRequiredGrowth(currentPrice, targetPrice) {
   if (currentPrice <= 0 || targetPrice <= 0) throw new RangeError("Prices must be positive");
   return ((targetPrice - currentPrice) / currentPrice) * 100;
 }
+
+
+function projectCompoundGrowth(initialValue, ratePercent, periods) {
+  if (initialValue < 0 || !Number.isInteger(periods) || periods < 0) throw new RangeError("Projection inputs are invalid");
+  return initialValue * (1 + ratePercent / 100) ** periods;
+}
