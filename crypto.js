@@ -75,3 +75,9 @@ function calculatePortfolioTotal(holdings) {
   if (!Array.isArray(holdings)) throw new TypeError("Holdings must be an array");
   return holdings.reduce((total, item) => total + item.amount * item.price, 0);
 }
+
+
+function calculateProfitLoss(costBasis, currentValue) {
+  if (![costBasis, currentValue].every(Number.isFinite)) throw new TypeError("Values must be finite");
+  return { amount: currentValue - costBasis, percentage: costBasis === 0 ? 0 : ((currentValue - costBasis) / costBasis) * 100 };
+}
