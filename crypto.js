@@ -277,3 +277,9 @@ function calculateLogReturn(startPrice, endPrice) {
   if (startPrice <= 0 || endPrice <= 0) throw new RangeError("Prices must be positive");
   return Math.log(endPrice / startPrice);
 }
+
+
+function calculateDrawdown(peakValue, currentValue) {
+  if (peakValue <= 0 || currentValue < 0) throw new RangeError("Invalid portfolio values");
+  return ((currentValue - peakValue) / peakValue) * 100;
+}
