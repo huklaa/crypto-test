@@ -23,6 +23,32 @@ The project uses modern ECMAScript modules, runs on Node.js 20 or newer, and rel
 
 ## Installation
 
+Install the package from npm:
+
+```bash
+npm install @huklaa/crypto-utils
+```
+
+Then import utilities from the package root:
+
+```js
+import {
+  calculateMarketCap,
+  calculatePortfolioTotal,
+  formatCurrency
+} from "@huklaa/crypto-utils";
+
+const holdings = [
+  { amount: 1.25, price: 3_400 },
+  { amount: 2_500, price: 1 }
+];
+
+console.log(formatCurrency(calculatePortfolioTotal(holdings)));
+console.log(formatCurrency(calculateMarketCap(3_400, 120_500_000)));
+```
+
+Until the first npm publication is completed, the repository can also be used directly:
+
 Clone the repository and install the package metadata:
 
 ```bash
@@ -35,7 +61,7 @@ The toolkit currently has no external dependencies, so installation is fast and 
 
 ## Usage
 
-Import utilities from the package root:
+When working from a repository clone, import utilities from the source entry point:
 
 ```js
 import {

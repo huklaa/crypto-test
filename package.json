@@ -1,22 +1,46 @@
 {
-  "name": "crypto-utility-toolkit",
-  "version": "1.0.0",
-  "description": "Dependency-free JavaScript utilities for crypto market, portfolio, trading, and staking calculations.",
+  "name": "@huklaa/crypto-utils",
+  "version": "1.0.1",
+  "description": "Dependency-free JavaScript toolkit for crypto analytics, portfolio, trading, staking, and Base ecosystem applications.",
   "type": "module",
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./package.json": "./package.json"
   },
+  "files": [
+    "src/",
+    "crypto.js",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
   "scripts": {
     "test": "node --test",
     "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check examples/base-portfolio.js && node --check tests/market.test.js && node --check tests/portfolio.test.js && node --check tests/trading.test.js && node --check tests/staking.test.js && node --check tests/validation.test.js",
     "example:base": "node examples/base-portfolio.js",
-    "check": "npm run lint && npm test"
+    "test:import": "node --input-type=module --eval \"import('@huklaa/crypto-utils').then((api) => { if (typeof api.calculateMarketCap !== 'function') throw new Error('Public API smoke test failed'); })\"",
+    "check": "npm run lint && npm test && npm run test:import",
+    "prepublishOnly": "npm run check"
   },
   "engines": {
     "node": ">=20"
   },
-  "keywords": ["crypto", "cryptocurrency", "portfolio", "trading", "staking", "utilities"],
+  "keywords": [
+    "base",
+    "cryptocurrency",
+    "crypto",
+    "defi",
+    "ethereum",
+    "portfolio",
+    "staking",
+    "trading",
+    "utilities",
+    "web3"
+  ],
+  "author": "huklaa",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/huklaa/crypto-test/issues"
   },
-  "homepage": "https://github.com/huklaa/crypto-test#readme"
+  "homepage": "https://github.com/huklaa/crypto-test#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
