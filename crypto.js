@@ -283,3 +283,9 @@ function calculateDrawdown(peakValue, currentValue) {
   if (peakValue <= 0 || currentValue < 0) throw new RangeError("Invalid portfolio values");
   return ((currentValue - peakValue) / peakValue) * 100;
 }
+
+
+function calculateAllocationPercentage(holdingValue, portfolioValue) {
+  if (holdingValue < 0 || portfolioValue <= 0) throw new RangeError("Portfolio values are invalid");
+  return (holdingValue / portfolioValue) * 100;
+}
