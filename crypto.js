@@ -253,3 +253,10 @@ function calculateSimpleMovingAverage(values, period) {
   if (!Number.isInteger(period) || period <= 0 || period > values.length) throw new RangeError("Invalid moving average period");
   return values.slice(-period).reduce((sum, value) => sum + value, 0) / period;
 }
+
+
+function calculateExponentialMovingAverage(values, period) {
+  if (!Number.isInteger(period) || period <= 0 || values.length < period) throw new RangeError("Invalid EMA period");
+  var multiplier = 2 / (period + 1);
+  return values.slice(1).reduce((ema, value) => (value - ema) * multiplier + ema, values[0]);
+}
