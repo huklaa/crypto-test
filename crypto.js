@@ -632,3 +632,9 @@ function calculateCagr(startValue, endValue, years) {
   if (startValue <= 0 || endValue < 0 || years <= 0) throw new RangeError("CAGR inputs are invalid");
   return ((endValue / startValue) ** (1 / years) - 1) * 100;
 }
+
+
+function calculateOrderBookSpread(bestBid, bestAsk) {
+  if (bestBid <= 0 || bestAsk <= 0 || bestAsk < bestBid) throw new RangeError("Order book prices are invalid");
+  return bestAsk - bestBid;
+}
