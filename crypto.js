@@ -146,3 +146,10 @@ function formatCryptoAmount(amount, maximumFractionDigits = 8) {
   if (!Number.isFinite(amount)) throw new TypeError("Amount must be finite");
   return new Intl.NumberFormat("en-US", { maximumFractionDigits, useGrouping: true }).format(amount);
 }
+
+
+function toUnixTimestamp(value) {
+  var milliseconds = new Date(value).getTime();
+  if (Number.isNaN(milliseconds)) throw new RangeError("Invalid date");
+  return Math.floor(milliseconds / 1000);
+}
