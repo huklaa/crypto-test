@@ -111,6 +111,30 @@ Common Base network and Base blockchain use cases include:
 
 This library does **not** connect wallets, sign transactions, or make Base RPC calls on its own. It is designed to sit beside `viem`, `ethers`, or wallet SDKs as a calculation and validation layer: those tools handle Web3 connectivity and onchain interactions, while these Web3 utilities handle predictable numeric operations, presentation, and input checks.
 
+### Run the Base portfolio example
+
+The runnable example uses illustrative ETH, USDC, and AERO holdings to calculate portfolio total, allocation, profit/loss, and target-allocation rebalance trades. It is fully offline and does not connect to a blockchain or submit transactions.
+
+```bash
+npm run example:base
+```
+
+See [`examples/base-portfolio.js`](./examples/base-portfolio.js) to adapt the data for a Base dashboard or portfolio tracker.
+
+## Project Structure
+
+```text
+crypto-test/
+├── examples/          # Runnable, network-free integration examples
+├── src/               # Validation, formatting, market, portfolio, trading, and staking modules
+├── tests/             # Node.js built-in test suites
+├── crypto.js          # Compatibility entry point
+├── CHANGELOG.md       # Version history
+├── CONTRIBUTING.md    # Contribution workflow
+├── LICENSE            # MIT License
+└── package.json       # Package metadata and scripts
+```
+
 ## Development
 
 Run the complete test suite:
