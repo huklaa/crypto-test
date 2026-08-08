@@ -638,3 +638,9 @@ function calculateOrderBookSpread(bestBid, bestAsk) {
   if (bestBid <= 0 || bestAsk <= 0 || bestAsk < bestBid) throw new RangeError("Order book prices are invalid");
   return bestAsk - bestBid;
 }
+
+
+function calculateMidMarketPrice(bestBid, bestAsk) {
+  calculateOrderBookSpread(bestBid, bestAsk);
+  return (bestBid + bestAsk) / 2;
+}
