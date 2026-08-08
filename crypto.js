@@ -442,3 +442,9 @@ function calculateTakeProfit(entryPrice, gainPercent) {
   if (entryPrice <= 0 || gainPercent < 0) throw new RangeError("Take profit inputs are invalid");
   return entryPrice * (1 + gainPercent / 100);
 }
+
+
+function calculateRequiredGrowth(currentPrice, targetPrice) {
+  if (currentPrice <= 0 || targetPrice <= 0) throw new RangeError("Prices must be positive");
+  return ((targetPrice - currentPrice) / currentPrice) * 100;
+}
