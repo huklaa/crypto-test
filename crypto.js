@@ -581,3 +581,10 @@ function buildPortfolioSummary(holdings, currency = "USD") {
 function createMarketSnapshot(coins, capturedAt = new Date()) {
   return { capturedAt: new Date(capturedAt).toISOString(), coinCount: coins.length, totalMarketCap: calculateTotalMarketCap(coins) };
 }
+
+
+function compareCoins(left, right) {
+  var leftValue = validateCoin(left);
+  var rightValue = validateCoin(right);
+  return { cheaper: leftValue.price <= rightValue.price ? leftValue.symbol : rightValue.symbol, priceDifference: Math.abs(leftValue.price - rightValue.price) };
+}
