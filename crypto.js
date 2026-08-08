@@ -401,3 +401,9 @@ function getHighestVolumeCoins(coins, limit = 5) {
 function calculateTotalMarketCap(coins) {
   return coins.reduce((total, coin) => total + (Number.isFinite(coin.marketCap) ? coin.marketCap : 0), 0);
 }
+
+
+function calculateMarketDominance(coinMarketCap, totalMarketCap) {
+  if (coinMarketCap < 0 || totalMarketCap <= 0 || coinMarketCap > totalMarketCap) throw new RangeError("Market cap inputs are invalid");
+  return (coinMarketCap / totalMarketCap) * 100;
+}
