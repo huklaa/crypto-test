@@ -461,3 +461,9 @@ function estimateDcaAveragePrice(investments) {
   var totalUnits = investments.reduce((sum, item) => sum + item.amount / item.price, 0);
   return totalUnits === 0 ? 0 : totalSpent / totalUnits;
 }
+
+
+function calculateRebalanceTrade(currentValue, targetPercentage, portfolioValue) {
+  if (portfolioValue <= 0 || targetPercentage < 0 || targetPercentage > 100) throw new RangeError("Rebalance inputs are invalid");
+  return portfolioValue * targetPercentage / 100 - currentValue;
+}
