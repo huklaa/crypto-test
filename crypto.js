@@ -541,3 +541,9 @@ function isPriceAboveTarget(currentPrice, targetPrice) {
   if (![currentPrice, targetPrice].every(Number.isFinite)) throw new TypeError("Prices must be finite");
   return currentPrice >= targetPrice;
 }
+
+
+function isPriceBelowTarget(currentPrice, targetPrice) {
+  if (![currentPrice, targetPrice].every(Number.isFinite)) throw new TypeError("Prices must be finite");
+  return currentPrice <= targetPrice;
+}
