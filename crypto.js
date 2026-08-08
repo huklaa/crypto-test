@@ -361,3 +361,11 @@ function parseCoinPair(pair) {
   if (parts.length !== 2 || !parts.every(isValidSymbol)) throw new TypeError("Trading pair is invalid");
   return { base: parts[0], quote: parts[1] };
 }
+
+
+function formatCoinPair(base, quote, separator = "/") {
+  var normalizedBase = normalizeSymbol(base);
+  var normalizedQuote = normalizeSymbol(quote);
+  if (!isValidSymbol(normalizedBase) || !isValidSymbol(normalizedQuote)) throw new TypeError("Invalid pair symbols");
+  return normalizedBase + separator + normalizedQuote;
+}
