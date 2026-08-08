@@ -353,3 +353,11 @@ function parseNumericPrice(value) {
   if (!Number.isFinite(parsed) || parsed < 0) throw new TypeError("Price is not a valid non-negative number");
   return parsed;
 }
+
+
+function parseCoinPair(pair) {
+  if (typeof pair !== "string") throw new TypeError("Pair must be a string");
+  var parts = pair.trim().toUpperCase().split(/[-_/]/);
+  if (parts.length !== 2 || !parts.every(isValidSymbol)) throw new TypeError("Trading pair is invalid");
+  return { base: parts[0], quote: parts[1] };
+}
