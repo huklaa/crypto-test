@@ -473,3 +473,10 @@ function clamp(value, minimum, maximum) {
   if (![value, minimum, maximum].every(Number.isFinite) || minimum > maximum) throw new RangeError("Clamp bounds are invalid");
   return Math.min(maximum, Math.max(minimum, value));
 }
+
+
+function roundToDecimals(value, decimals = 2) {
+  if (!Number.isFinite(value) || !Number.isInteger(decimals) || decimals < 0 || decimals > 15) throw new RangeError("Rounding inputs are invalid");
+  var factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+}
