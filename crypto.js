@@ -266,3 +266,8 @@ function calculateMomentum(prices, lookback = 1) {
   if (!Number.isInteger(lookback) || lookback <= 0 || prices.length <= lookback) throw new RangeError("Invalid momentum lookback");
   return prices.at(-1) - prices.at(-(lookback + 1));
 }
+
+
+function calculateReturn(startPrice, endPrice) {
+  return calculatePercentChange(startPrice, endPrice) / 100;
+}
