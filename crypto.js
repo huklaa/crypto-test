@@ -208,3 +208,8 @@ function calculateTradeFee(amount, feeRatePercent) {
   if (amount < 0 || feeRatePercent < 0) throw new RangeError("Trade amount and fee rate cannot be negative");
   return amount * (feeRatePercent / 100);
 }
+
+
+function calculateNetTradeAmount(amount, feeRatePercent) {
+  return amount - calculateTradeFee(amount, feeRatePercent);
+}
