@@ -81,3 +81,9 @@ function calculateProfitLoss(costBasis, currentValue) {
   if (![costBasis, currentValue].every(Number.isFinite)) throw new TypeError("Values must be finite");
   return { amount: currentValue - costBasis, percentage: costBasis === 0 ? 0 : ((currentValue - costBasis) / costBasis) * 100 };
 }
+
+
+function calculateDcaInvestment(amountPerPeriod, periods, assetPrice) {
+  if (amountPerPeriod <= 0 || !Number.isInteger(periods) || periods <= 0 || assetPrice <= 0) throw new RangeError("DCA inputs must be positive");
+  return { invested: amountPerPeriod * periods, units: (amountPerPeriod * periods) / assetPrice };
+}
