@@ -407,3 +407,9 @@ function calculateMarketDominance(coinMarketCap, totalMarketCap) {
   if (coinMarketCap < 0 || totalMarketCap <= 0 || coinMarketCap > totalMarketCap) throw new RangeError("Market cap inputs are invalid");
   return (coinMarketCap / totalMarketCap) * 100;
 }
+
+
+function calculateLimitOrderCost(price, amount, feeRatePercent = 0) {
+  var gross = assertPositiveNumber(price, "price") * assertPositiveNumber(amount, "amount");
+  return gross + calculateTradeFee(gross, feeRatePercent);
+}
