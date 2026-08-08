@@ -626,3 +626,9 @@ function estimateRewardTokens(stakedAmount, rewardRatePercent) {
   if (stakedAmount < 0 || rewardRatePercent < 0) throw new RangeError("Reward inputs cannot be negative");
   return stakedAmount * rewardRatePercent / 100;
 }
+
+
+function calculateCagr(startValue, endValue, years) {
+  if (startValue <= 0 || endValue < 0 || years <= 0) throw new RangeError("CAGR inputs are invalid");
+  return ((endValue / startValue) ** (1 / years) - 1) * 100;
+}
