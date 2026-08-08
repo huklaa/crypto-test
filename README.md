@@ -97,6 +97,20 @@ const yearEndBalance = calculateCompoundedStaking(1_000, 8, 12, 1);
 | `src/staking.js` | Simple and compounded yield estimates | `calculateStakingReward`, `calculateCompoundedStaking` |
 | `src/index.js` | Stable public API | Re-exports every supported utility |
 
+## Base Network Use Cases
+
+Crypto Utility Toolkit is not specific to Base, but its dependency-free calculations and validation helpers fit naturally into applications built across the Base ecosystem. Base is an Ethereum Layer 2, so teams can combine this JavaScript crypto toolkit with their existing wallet, indexing, and smart-contract stack while keeping deterministic financial calculations in a separate, testable layer.
+
+Common Base network and Base blockchain use cases include:
+
+- Formatting ETH, USDC, and ERC-20 balances for a Base wallet, portfolio tracker, or account dashboard.
+- Calculating price changes, market capitalization, portfolio allocation, and profit/loss for tokens available on Base.
+- Supporting a swap or trading calculator with fee, slippage, stop-loss, take-profit, position-sizing, and risk/reward calculations.
+- Powering token analytics in Base DeFi dashboards, DEX interfaces, lending applications, staking products, and portfolio-tracking experiences.
+- Normalizing token symbols and validating market data before it reaches charts, tables, alerts, or transaction previews.
+
+This library does **not** connect wallets, sign transactions, or make Base RPC calls on its own. It is designed to sit beside `viem`, `ethers`, or wallet SDKs as a calculation and validation layer: those tools handle Web3 connectivity and onchain interactions, while these Web3 utilities handle predictable numeric operations, presentation, and input checks.
+
 ## Development
 
 Run the complete test suite:
