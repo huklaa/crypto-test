@@ -386,3 +386,8 @@ function indexCoinsBySymbol(coins) {
 function getTopGainers(coins, limit = 5) {
   return [...coins].filter(coin => Number.isFinite(coin.change24h)).sort((a, b) => b.change24h - a.change24h).slice(0, limit);
 }
+
+
+function getTopLosers(coins, limit = 5) {
+  return [...coins].filter(coin => Number.isFinite(coin.change24h)).sort((a, b) => a.change24h - b.change24h).slice(0, limit);
+}
