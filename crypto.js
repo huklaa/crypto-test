@@ -197,3 +197,8 @@ function calculateCirculatingRatio(circulatingSupply, maxSupply) {
   if (circulatingSupply < 0 || maxSupply <= 0 || circulatingSupply > maxSupply) throw new RangeError("Supply values are inconsistent");
   return (circulatingSupply / maxSupply) * 100;
 }
+
+
+function calculateFullyDilutedValuation(price, maxSupply) {
+  return assertPositiveNumber(price, "price") * assertPositiveNumber(maxSupply, "maxSupply");
+}
