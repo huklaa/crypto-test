@@ -309,3 +309,10 @@ function calculateRiskReward(entryPrice, stopPrice, targetPrice) {
   if (risk === 0) throw new RangeError("Risk cannot be zero");
   return reward / risk;
 }
+
+
+function calculatePositionSize(accountValue, riskPercent, entryPrice, stopPrice) {
+  var riskPerUnit = Math.abs(entryPrice - stopPrice);
+  if (accountValue <= 0 || riskPercent <= 0 || riskPerUnit === 0) throw new RangeError("Position inputs are invalid");
+  return (accountValue * riskPercent / 100) / riskPerUnit;
+}
