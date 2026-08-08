@@ -226,3 +226,11 @@ function arithmeticMean(values) {
   if (!values.every(Number.isFinite)) throw new TypeError("All values must be finite");
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
+
+
+function median(values) {
+  ensureNonEmptyArray(values, "values");
+  var sorted = [...values].sort((a, b) => a - b);
+  var middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
