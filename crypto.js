@@ -522,3 +522,8 @@ function fillMissingPrices(prices) {
     return Number.isFinite(price) ? price : lastKnown;
   });
 }
+
+
+function calculatePriceChanges(prices) {
+  return prices.slice(1).map((price, index) => calculatePercentChange(prices[index], price));
+}
