@@ -295,3 +295,9 @@ function calculateAllocationMap(holdings) {
   var total = calculatePortfolioTotal(holdings);
   return holdings.map(item => ({ symbol: normalizeSymbol(item.symbol), percentage: calculateAllocationPercentage(item.amount * item.price, total) }));
 }
+
+
+function findLargestHolding(holdings) {
+  ensureNonEmptyArray(holdings, "holdings");
+  return holdings.reduce((largest, item) => item.amount * item.price > largest.amount * largest.price ? item : largest);
+}
