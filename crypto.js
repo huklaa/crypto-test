@@ -322,3 +322,9 @@ function convertCurrency(amount, exchangeRate) {
   if (!Number.isFinite(amount) || !Number.isFinite(exchangeRate) || exchangeRate < 0) throw new RangeError("Conversion inputs are invalid");
   return amount * exchangeRate;
 }
+
+
+function convertCrypto(amount, sourcePrice, targetPrice) {
+  if (amount < 0 || sourcePrice <= 0 || targetPrice <= 0) throw new RangeError("Crypto conversion inputs are invalid");
+  return (amount * sourcePrice) / targetPrice;
+}
