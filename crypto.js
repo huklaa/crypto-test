@@ -644,3 +644,9 @@ function calculateMidMarketPrice(bestBid, bestAsk) {
   calculateOrderBookSpread(bestBid, bestAsk);
   return (bestBid + bestAsk) / 2;
 }
+
+
+function calculateLiquidityRatio(volume24h, marketCap) {
+  if (volume24h < 0 || marketCap <= 0) throw new RangeError("Liquidity inputs are invalid");
+  return volume24h / marketCap;
+}
