@@ -110,3 +110,8 @@ function searchCoins(coins, query) {
 function filterCoinsByPrice(coins, minimum = 0, maximum = Infinity) {
   return coins.filter(coin => Number.isFinite(coin.price) && coin.price >= minimum && coin.price <= maximum);
 }
+
+
+function filterCoinsByChange(coins, minimumChange) {
+  return coins.filter(coin => Number.isFinite(coin.change24h) && coin.change24h >= minimumChange);
+}
