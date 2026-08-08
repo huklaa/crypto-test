@@ -369,3 +369,10 @@ function formatCoinPair(base, quote, separator = "/") {
   if (!isValidSymbol(normalizedBase) || !isValidSymbol(normalizedQuote)) throw new TypeError("Invalid pair symbols");
   return normalizedBase + separator + normalizedQuote;
 }
+
+
+function deduplicateCoins(coins) {
+  var bySymbol = new Map();
+  coins.forEach(coin => bySymbol.set(normalizeSymbol(coin.symbol), coin));
+  return [...bySymbol.values()];
+}
