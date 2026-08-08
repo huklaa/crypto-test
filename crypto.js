@@ -115,3 +115,9 @@ function filterCoinsByPrice(coins, minimum = 0, maximum = Infinity) {
 function filterCoinsByChange(coins, minimumChange) {
   return coins.filter(coin => Number.isFinite(coin.change24h) && coin.change24h >= minimumChange);
 }
+
+
+function sortCoinsByPrice(coins, direction = "desc") {
+  var multiplier = direction === "asc" ? 1 : -1;
+  return [...coins].sort((a, b) => (a.price - b.price) * multiplier);
+}
