@@ -620,3 +620,9 @@ function calculateYieldAfterFee(grossYieldPercent, platformFeePercent) {
   if (grossYieldPercent < 0 || platformFeePercent < 0 || platformFeePercent > 100) throw new RangeError("Yield inputs are invalid");
   return grossYieldPercent * (1 - platformFeePercent / 100);
 }
+
+
+function estimateRewardTokens(stakedAmount, rewardRatePercent) {
+  if (stakedAmount < 0 || rewardRatePercent < 0) throw new RangeError("Reward inputs cannot be negative");
+  return stakedAmount * rewardRatePercent / 100;
+}
