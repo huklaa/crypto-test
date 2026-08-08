@@ -527,3 +527,11 @@ function fillMissingPrices(prices) {
 function calculatePriceChanges(prices) {
   return prices.slice(1).map((price, index) => calculatePercentChange(prices[index], price));
 }
+
+
+function normalizePriceSeries(prices) {
+  ensureNonEmptyArray(prices, "prices");
+  var base = prices[0];
+  if (base === 0) throw new RangeError("Base price cannot be zero");
+  return prices.map(price => price / base * 100);
+}
