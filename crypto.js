@@ -93,3 +93,9 @@ function calculateWeightedAveragePrice(purchases) {
   var totals = purchases.reduce((acc, purchase) => ({ cost: acc.cost + purchase.price * purchase.amount, amount: acc.amount + purchase.amount }), { cost: 0, amount: 0 });
   return totals.amount === 0 ? 0 : totals.cost / totals.amount;
 }
+
+
+function calculateHoldingValue(amount, price) {
+  if (![amount, price].every(Number.isFinite) || amount < 0 || price < 0) throw new RangeError("Amount and price must be non-negative");
+  return amount * price;
+}
