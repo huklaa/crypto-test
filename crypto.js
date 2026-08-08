@@ -99,3 +99,9 @@ function calculateHoldingValue(amount, price) {
   if (![amount, price].every(Number.isFinite) || amount < 0 || price < 0) throw new RangeError("Amount and price must be non-negative");
   return amount * price;
 }
+
+
+function searchCoins(coins, query) {
+  var needle = String(query).trim().toLowerCase();
+  return coins.filter(coin => coin.symbol.toLowerCase().includes(needle) || coin.name.toLowerCase().includes(needle));
+}
