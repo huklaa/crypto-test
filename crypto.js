@@ -105,3 +105,8 @@ function searchCoins(coins, query) {
   var needle = String(query).trim().toLowerCase();
   return coins.filter(coin => coin.symbol.toLowerCase().includes(needle) || coin.name.toLowerCase().includes(needle));
 }
+
+
+function filterCoinsByPrice(coins, minimum = 0, maximum = Infinity) {
+  return coins.filter(coin => Number.isFinite(coin.price) && coin.price >= minimum && coin.price <= maximum);
+}
