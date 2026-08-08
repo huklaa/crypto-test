@@ -588,3 +588,11 @@ function compareCoins(left, right) {
   var rightValue = validateCoin(right);
   return { cheaper: leftValue.price <= rightValue.price ? leftValue.symbol : rightValue.symbol, priceDifference: Math.abs(leftValue.price - rightValue.price) };
 }
+
+
+function describePriceChange(changePercent) {
+  if (!Number.isFinite(changePercent)) throw new TypeError("Change must be finite");
+  if (changePercent > 0) return "up " + roundToDecimals(changePercent) + "%";
+  if (changePercent < 0) return "down " + roundToDecimals(Math.abs(changePercent)) + "%";
+  return "unchanged";
+}
