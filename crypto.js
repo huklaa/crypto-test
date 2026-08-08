@@ -396,3 +396,8 @@ function getTopLosers(coins, limit = 5) {
 function getHighestVolumeCoins(coins, limit = 5) {
   return [...coins].filter(coin => Number.isFinite(coin.volume24h)).sort((a, b) => b.volume24h - a.volume24h).slice(0, limit);
 }
+
+
+function calculateTotalMarketCap(coins) {
+  return coins.reduce((total, coin) => total + (Number.isFinite(coin.marketCap) ? coin.marketCap : 0), 0);
+}
