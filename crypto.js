@@ -430,3 +430,9 @@ function applySlippage(price, slippagePercent, side = "buy") {
   if (price <= 0 || slippagePercent < 0) throw new RangeError("Slippage inputs are invalid");
   return price * (1 + (side === "buy" ? 1 : -1) * slippagePercent / 100);
 }
+
+
+function calculateStopLoss(entryPrice, lossPercent) {
+  if (entryPrice <= 0 || lossPercent < 0 || lossPercent >= 100) throw new RangeError("Stop loss inputs are invalid");
+  return entryPrice * (1 - lossPercent / 100);
+}
