@@ -424,3 +424,9 @@ function calculateSellProceeds(price, amount, feeRatePercent = 0) {
 function calculateSlippage(expectedPrice, executedPrice) {
   return calculatePercentChange(expectedPrice, executedPrice);
 }
+
+
+function applySlippage(price, slippagePercent, side = "buy") {
+  if (price <= 0 || slippagePercent < 0) throw new RangeError("Slippage inputs are invalid");
+  return price * (1 + (side === "buy" ? 1 : -1) * slippagePercent / 100);
+}
