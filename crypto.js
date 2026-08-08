@@ -191,3 +191,9 @@ function ensureNonEmptyArray(value, fieldName = "items") {
   if (!Array.isArray(value) || value.length === 0) throw new TypeError(fieldName + " must be a non-empty array");
   return value;
 }
+
+
+function calculateCirculatingRatio(circulatingSupply, maxSupply) {
+  if (circulatingSupply < 0 || maxSupply <= 0 || circulatingSupply > maxSupply) throw new RangeError("Supply values are inconsistent");
+  return (circulatingSupply / maxSupply) * 100;
+}
