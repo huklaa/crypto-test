@@ -213,3 +213,9 @@ function calculateTradeFee(amount, feeRatePercent) {
 function calculateNetTradeAmount(amount, feeRatePercent) {
   return amount - calculateTradeFee(amount, feeRatePercent);
 }
+
+
+function calculateBreakEvenPrice(totalCost, assetAmount) {
+  if (totalCost < 0 || assetAmount <= 0) throw new RangeError("Cost must be non-negative and amount positive");
+  return totalCost / assetAmount;
+}
