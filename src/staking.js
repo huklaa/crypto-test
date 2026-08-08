@@ -1,3 +1,10 @@
+/**
+ * Estimates simple staking rewards using a 365-day year.
+ * @param {number} principal - Amount staked.
+ * @param {number} annualRatePercent - Annual percentage rate.
+ * @param {number} days - Staking duration in days.
+ * @returns {number} Estimated reward amount.
+ */
 export function calculateStakingReward(principal, annualRatePercent, days) {
   if (![principal, annualRatePercent, days].every(Number.isFinite) || principal < 0 || annualRatePercent < 0 || days < 0) {
     throw new RangeError("Staking inputs cannot be negative");

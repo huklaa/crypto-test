@@ -5,6 +5,12 @@ export function calculateTradeFee(amount, feeRatePercent) {
   return amount * (feeRatePercent / 100);
 }
 
+/**
+ * Calculates the percentage difference between expected and executed prices.
+ * @param {number} expectedPrice - Quoted execution price.
+ * @param {number} executedPrice - Actual execution price.
+ * @returns {number} Signed slippage percentage.
+ */
 export function calculateSlippage(expectedPrice, executedPrice) {
   if (![expectedPrice, executedPrice].every(Number.isFinite) || expectedPrice === 0) {
     throw new RangeError("Prices must be finite and expected price cannot be zero");
@@ -19,6 +25,14 @@ export function applySlippage(price, slippagePercent, side = "buy") {
   return price * (1 + (side === "buy" ? 1 : -1) * slippagePercent / 100);
 }
 
+/**
+ * Sizes a position from account risk and stop distance.
+ * @param {number} accountValue - Total account value.
+ * @param {number} riskPercent - Account percentage at risk.
+ * @param {number} entryPrice - Planned entry price.
+ * @param {number} stopPrice - Planned stop price.
+ * @returns {number} Position units.
+ */
 export function calculatePositionSize(accountValue, riskPercent, entryPrice, stopPrice) {
   const riskPerUnit = Math.abs(entryPrice - stopPrice);
   if (accountValue <= 0 || riskPercent <= 0 || riskPerUnit === 0) {

@@ -1,5 +1,12 @@
 import { ensureNonEmptyArray } from "./validation.js";
 
+/**
+ * Calculates the percentage change between two prices.
+ * @param {number} previous - The original price. Must be non-zero.
+ * @param {number} current - The current price.
+ * @returns {number} The signed percentage change.
+ * @throws {RangeError} If either price is not finite or `previous` is zero.
+ */
 export function calculatePercentChange(previous, current) {
   if (!Number.isFinite(previous) || !Number.isFinite(current) || previous === 0) {
     throw new RangeError("Prices must be finite and previous price cannot be zero");
@@ -7,6 +14,13 @@ export function calculatePercentChange(previous, current) {
   return ((current - previous) / previous) * 100;
 }
 
+/**
+ * Calculates market capitalization from price and circulating supply.
+ * @param {number} price - Current unit price.
+ * @param {number} circulatingSupply - Number of circulating units.
+ * @returns {number} The market capitalization.
+ * @throws {RangeError} If an input is negative or not finite.
+ */
 export function calculateMarketCap(price, circulatingSupply) {
   if (![price, circulatingSupply].every(Number.isFinite) || price < 0 || circulatingSupply < 0) {
     throw new RangeError("Price and supply must be non-negative finite numbers");
@@ -34,6 +48,11 @@ export function median(values) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+/**
+ * Calculates population standard deviation for a series of returns.
+ * @param {number[]} returns - Finite periodic returns, expressed consistently.
+ * @returns {number} Population volatility in the input's units.
+ */
 export function calculateVolatility(returns) {
   ensureNonEmptyArray(returns, "returns");
   const mean = arithmeticMean(returns);

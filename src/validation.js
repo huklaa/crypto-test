@@ -1,3 +1,8 @@
+/**
+ * Trims and uppercases a token symbol.
+ * @param {string} symbol - Token symbol to normalize.
+ * @returns {string} Canonical uppercase symbol.
+ */
 export function normalizeSymbol(symbol) {
   if (typeof symbol !== "string") throw new TypeError("Symbol must be a string");
   return symbol.trim().toUpperCase();
@@ -38,6 +43,11 @@ export function validateCoin(coin) {
   return { ...coin, symbol, name: coin.name.trim() };
 }
 
+/**
+ * Validates and normalizes a portfolio holding record.
+ * @param {{symbol: string, amount: number, price: number}} holding - Holding data.
+ * @returns {{symbol: string, amount: number, price: number}} A normalized copy.
+ */
 export function validateHolding(holding) {
   if (!holding || typeof holding !== "object") throw new TypeError("Holding must be an object");
   return {
