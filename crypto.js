@@ -219,3 +219,10 @@ function calculateBreakEvenPrice(totalCost, assetAmount) {
   if (totalCost < 0 || assetAmount <= 0) throw new RangeError("Cost must be non-negative and amount positive");
   return totalCost / assetAmount;
 }
+
+
+function arithmeticMean(values) {
+  ensureNonEmptyArray(values, "values");
+  if (!values.every(Number.isFinite)) throw new TypeError("All values must be finite");
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
