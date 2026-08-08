@@ -501,3 +501,8 @@ function groupCoinsByCategory(coins) {
     return groups;
   }, {});
 }
+
+
+function mapPriceHistory(records) {
+  return records.map(record => ({ timestamp: new Date(record.timestamp).getTime(), price: parseNumericPrice(record.price) })).sort((a, b) => a.timestamp - b.timestamp);
+}
