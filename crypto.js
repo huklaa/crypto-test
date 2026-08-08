@@ -419,3 +419,8 @@ function calculateSellProceeds(price, amount, feeRatePercent = 0) {
   var gross = assertPositiveNumber(price, "price") * assertPositiveNumber(amount, "amount");
   return gross - calculateTradeFee(gross, feeRatePercent);
 }
+
+
+function calculateSlippage(expectedPrice, executedPrice) {
+  return calculatePercentChange(expectedPrice, executedPrice);
+}
