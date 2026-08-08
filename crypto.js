@@ -328,3 +328,9 @@ function convertCrypto(amount, sourcePrice, targetPrice) {
   if (amount < 0 || sourcePrice <= 0 || targetPrice <= 0) throw new RangeError("Crypto conversion inputs are invalid");
   return (amount * sourcePrice) / targetPrice;
 }
+
+
+function satoshisToBitcoin(satoshis) {
+  if (!Number.isSafeInteger(satoshis) || satoshis < 0) throw new RangeError("Satoshis must be a non-negative safe integer");
+  return satoshis / 100000000;
+}
