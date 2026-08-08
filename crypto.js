@@ -480,3 +480,9 @@ function roundToDecimals(value, decimals = 2) {
   var factor = 10 ** decimals;
   return Math.round((value + Number.EPSILON) * factor) / factor;
 }
+
+
+function safeDivide(numerator, denominator, fallback = 0) {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator)) throw new TypeError("Division inputs must be finite");
+  return denominator === 0 ? fallback : numerator / denominator;
+}
