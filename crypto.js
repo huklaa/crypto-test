@@ -576,3 +576,8 @@ function buildPortfolioSummary(holdings, currency = "USD") {
   var total = calculatePortfolioTotal(holdings);
   return { assetCount: holdings.length, total, formattedTotal: formatCurrency(total, currency) };
 }
+
+
+function createMarketSnapshot(coins, capturedAt = new Date()) {
+  return { capturedAt: new Date(capturedAt).toISOString(), coinCount: coins.length, totalMarketCap: calculateTotalMarketCap(coins) };
+}
