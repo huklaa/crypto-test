@@ -316,3 +316,9 @@ function calculatePositionSize(accountValue, riskPercent, entryPrice, stopPrice)
   if (accountValue <= 0 || riskPercent <= 0 || riskPerUnit === 0) throw new RangeError("Position inputs are invalid");
   return (accountValue * riskPercent / 100) / riskPerUnit;
 }
+
+
+function convertCurrency(amount, exchangeRate) {
+  if (!Number.isFinite(amount) || !Number.isFinite(exchangeRate) || exchangeRate < 0) throw new RangeError("Conversion inputs are invalid");
+  return amount * exchangeRate;
+}
