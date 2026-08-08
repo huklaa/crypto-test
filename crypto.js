@@ -650,3 +650,14 @@ function calculateLiquidityRatio(volume24h, marketCap) {
   if (volume24h < 0 || marketCap <= 0) throw new RangeError("Liquidity inputs are invalid");
   return volume24h / marketCap;
 }
+
+
+function createCryptoToolkit() {
+  return {
+    normalizeSymbol, isValidSymbol, formatCurrency, calculatePercentChange,
+    calculateMarketCap, calculatePortfolioTotal, calculateProfitLoss,
+    calculateDcaInvestment, searchCoins, sortCoinsByMarketCap,
+    calculateVolatility, calculateSimpleMovingAverage, calculatePositionSize,
+    createPriceAlert, evaluatePriceAlert, calculateStakingReward
+  };
+}
