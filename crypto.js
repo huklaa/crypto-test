@@ -559,3 +559,8 @@ function evaluatePriceAlert(alert, currentPrice) {
   if (!alert.active) return false;
   return alert.direction === "above" ? isPriceAboveTarget(currentPrice, alert.targetPrice) : isPriceBelowTarget(currentPrice, alert.targetPrice);
 }
+
+
+function togglePriceAlert(alert, active = !alert.active) {
+  return { ...alert, active: Boolean(active) };
+}
