@@ -553,3 +553,9 @@ function createPriceAlert(symbol, targetPrice, direction = "above") {
   if (!["above", "below"].includes(direction)) throw new RangeError("Alert direction is invalid");
   return { symbol: normalizeSymbol(symbol), targetPrice: assertPositiveNumber(targetPrice, "targetPrice"), direction, active: true };
 }
+
+
+function evaluatePriceAlert(alert, currentPrice) {
+  if (!alert.active) return false;
+  return alert.direction === "above" ? isPriceAboveTarget(currentPrice, alert.targetPrice) : isPriceBelowTarget(currentPrice, alert.targetPrice);
+}
