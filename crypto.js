@@ -535,3 +535,9 @@ function normalizePriceSeries(prices) {
   if (base === 0) throw new RangeError("Base price cannot be zero");
   return prices.map(price => price / base * 100);
 }
+
+
+function isPriceAboveTarget(currentPrice, targetPrice) {
+  if (![currentPrice, targetPrice].every(Number.isFinite)) throw new TypeError("Prices must be finite");
+  return currentPrice >= targetPrice;
+}
