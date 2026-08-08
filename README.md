@@ -1,5 +1,7 @@
 # Crypto Utility Toolkit
 
+[![Tests](https://github.com/huklaa/crypto-test/actions/workflows/test.yml/badge.svg)](https://github.com/huklaa/crypto-test/actions/workflows/test.yml)
+
 A dependency-free JavaScript toolkit for common cryptocurrency calculations and data handling. It provides focused, composable functions for market analysis, portfolio tracking, trade planning, staking estimates, validation, and presentation.
 
 The project uses modern ECMAScript modules, runs on Node.js 20 or newer, and relies on Node's built-in test runner—there are no runtime or development dependencies.
@@ -116,6 +118,10 @@ npm run lint
 ```
 
 Tests use `node:test` and cover success cases, edge cases, and invalid input handling.
+
+## CI / Tests
+
+GitHub Actions runs the test suite and project checks on every push and pull request using Node.js 20. The status badge at the top of this README reflects the latest workflow result on the default branch.
 
 ## Design Principles
 
