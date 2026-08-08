@@ -127,3 +127,10 @@ function sortCoinsByMarketCap(coins, direction = "desc") {
   var multiplier = direction === "asc" ? 1 : -1;
   return [...coins].sort((a, b) => (a.marketCap - b.marketCap) * multiplier);
 }
+
+
+function formatCryptoDate(value, locale = "en-US") {
+  var date = new Date(value);
+  if (Number.isNaN(date.getTime())) throw new RangeError("Invalid date");
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(date);
+}
