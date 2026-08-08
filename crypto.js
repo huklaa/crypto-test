@@ -492,3 +492,12 @@ function sumBy(items, selector) {
   if (!Array.isArray(items) || typeof selector !== "function") throw new TypeError("Invalid sumBy arguments");
   return items.reduce((sum, item) => sum + selector(item), 0);
 }
+
+
+function groupCoinsByCategory(coins) {
+  return coins.reduce((groups, coin) => {
+    var category = coin.category || "uncategorized";
+    (groups[category] ||= []).push(coin);
+    return groups;
+  }, {});
+}
