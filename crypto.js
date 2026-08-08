@@ -547,3 +547,9 @@ function isPriceBelowTarget(currentPrice, targetPrice) {
   if (![currentPrice, targetPrice].every(Number.isFinite)) throw new TypeError("Prices must be finite");
   return currentPrice <= targetPrice;
 }
+
+
+function createPriceAlert(symbol, targetPrice, direction = "above") {
+  if (!["above", "below"].includes(direction)) throw new RangeError("Alert direction is invalid");
+  return { symbol: normalizeSymbol(symbol), targetPrice: assertPositiveNumber(targetPrice, "targetPrice"), direction, active: true };
+}
