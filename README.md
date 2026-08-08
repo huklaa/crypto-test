@@ -99,7 +99,7 @@ const yearEndBalance = calculateCompoundedStaking(1_000, 8, 12, 1);
 
 ## Base Network Use Cases
 
-Crypto Utility Toolkit is not specific to Base, but its dependency-free calculations and validation helpers fit naturally into applications built across the Base ecosystem. Base is an Ethereum Layer 2, so teams can combine this JavaScript crypto toolkit with their existing wallet, indexing, and smart-contract stack while keeping deterministic financial calculations in a separate, testable layer.
+Crypto Utility Toolkit is not specific to Base, but its dependency-free calculations and validation helpers fit naturally into applications built across the Base ecosystem. [Base](https://base.org) is an Ethereum Layer 2, so teams can combine this JavaScript crypto toolkit with their existing wallet, indexing, and smart-contract stack while keeping deterministic financial calculations in a separate, testable layer.
 
 Common Base network and Base blockchain use cases include:
 
