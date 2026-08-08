@@ -334,3 +334,9 @@ function satoshisToBitcoin(satoshis) {
   if (!Number.isSafeInteger(satoshis) || satoshis < 0) throw new RangeError("Satoshis must be a non-negative safe integer");
   return satoshis / 100000000;
 }
+
+
+function bitcoinToSatoshis(bitcoin) {
+  if (!Number.isFinite(bitcoin) || bitcoin < 0) throw new RangeError("Bitcoin amount must be non-negative");
+  return Math.round(bitcoin * 100000000);
+}
