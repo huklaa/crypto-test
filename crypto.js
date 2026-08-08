@@ -608,3 +608,9 @@ function calculateCompoundedStaking(principal, annualRatePercent, compoundsPerYe
   if (principal < 0 || annualRatePercent < 0 || compoundsPerYear <= 0 || years < 0) throw new RangeError("Compounding inputs are invalid");
   return principal * (1 + annualRatePercent / 100 / compoundsPerYear) ** (compoundsPerYear * years);
 }
+
+
+function calculateAnnualizedReturn(startValue, endValue, days) {
+  if (startValue <= 0 || endValue < 0 || days <= 0) throw new RangeError("Annualized return inputs are invalid");
+  return ((endValue / startValue) ** (365 / days) - 1) * 100;
+}
