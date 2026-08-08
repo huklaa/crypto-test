@@ -381,3 +381,8 @@ function deduplicateCoins(coins) {
 function indexCoinsBySymbol(coins) {
   return Object.fromEntries(coins.map(coin => [normalizeSymbol(coin.symbol), coin]));
 }
+
+
+function getTopGainers(coins, limit = 5) {
+  return [...coins].filter(coin => Number.isFinite(coin.change24h)).sort((a, b) => b.change24h - a.change24h).slice(0, limit);
+}
