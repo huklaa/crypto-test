@@ -121,3 +121,9 @@ function sortCoinsByPrice(coins, direction = "desc") {
   var multiplier = direction === "asc" ? 1 : -1;
   return [...coins].sort((a, b) => (a.price - b.price) * multiplier);
 }
+
+
+function sortCoinsByMarketCap(coins, direction = "desc") {
+  var multiplier = direction === "asc" ? 1 : -1;
+  return [...coins].sort((a, b) => (a.marketCap - b.marketCap) * multiplier);
+}
