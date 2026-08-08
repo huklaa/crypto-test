@@ -240,3 +240,10 @@ function priceRange(prices) {
   ensureNonEmptyArray(prices, "prices");
   return { low: Math.min(...prices), high: Math.max(...prices), spread: Math.max(...prices) - Math.min(...prices) };
 }
+
+
+function calculateVolatility(returns) {
+  ensureNonEmptyArray(returns, "returns");
+  var mean = arithmeticMean(returns);
+  return Math.sqrt(arithmeticMean(returns.map(value => (value - mean) ** 2)));
+}
