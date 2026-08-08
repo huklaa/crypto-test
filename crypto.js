@@ -467,3 +467,9 @@ function calculateRebalanceTrade(currentValue, targetPercentage, portfolioValue)
   if (portfolioValue <= 0 || targetPercentage < 0 || targetPercentage > 100) throw new RangeError("Rebalance inputs are invalid");
   return portfolioValue * targetPercentage / 100 - currentValue;
 }
+
+
+function clamp(value, minimum, maximum) {
+  if (![value, minimum, maximum].every(Number.isFinite) || minimum > maximum) throw new RangeError("Clamp bounds are invalid");
+  return Math.min(maximum, Math.max(minimum, value));
+}
