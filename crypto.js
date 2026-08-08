@@ -454,3 +454,10 @@ function projectCompoundGrowth(initialValue, ratePercent, periods) {
   if (initialValue < 0 || !Number.isInteger(periods) || periods < 0) throw new RangeError("Projection inputs are invalid");
   return initialValue * (1 + ratePercent / 100) ** periods;
 }
+
+
+function estimateDcaAveragePrice(investments) {
+  var totalSpent = investments.reduce((sum, item) => sum + item.amount, 0);
+  var totalUnits = investments.reduce((sum, item) => sum + item.amount / item.price, 0);
+  return totalUnits === 0 ? 0 : totalSpent / totalUnits;
+}
