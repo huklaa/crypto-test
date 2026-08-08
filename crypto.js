@@ -486,3 +486,9 @@ function safeDivide(numerator, denominator, fallback = 0) {
   if (!Number.isFinite(numerator) || !Number.isFinite(denominator)) throw new TypeError("Division inputs must be finite");
   return denominator === 0 ? fallback : numerator / denominator;
 }
+
+
+function sumBy(items, selector) {
+  if (!Array.isArray(items) || typeof selector !== "function") throw new TypeError("Invalid sumBy arguments");
+  return items.reduce((sum, item) => sum + selector(item), 0);
+}
