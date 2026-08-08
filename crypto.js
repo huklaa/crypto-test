@@ -179,3 +179,9 @@ function validateHolding(holding) {
   if (!holding || typeof holding !== "object") throw new TypeError("Holding must be an object");
   return { symbol: normalizeSymbol(holding.symbol), amount: assertPositiveNumber(holding.amount, "amount"), price: assertPositiveNumber(holding.price, "price") };
 }
+
+
+function isValidCurrencyCode(code) {
+  if (typeof code !== "string" || !/^[A-Z]{3}$/.test(code.toUpperCase())) return false;
+  try { new Intl.NumberFormat("en", { style: "currency", currency: code.toUpperCase() }); return true; } catch { return false; }
+}
