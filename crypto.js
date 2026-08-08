@@ -602,3 +602,9 @@ function calculateStakingReward(principal, annualRatePercent, days) {
   if (principal < 0 || annualRatePercent < 0 || days < 0) throw new RangeError("Staking inputs cannot be negative");
   return principal * annualRatePercent / 100 * days / 365;
 }
+
+
+function calculateCompoundedStaking(principal, annualRatePercent, compoundsPerYear, years) {
+  if (principal < 0 || annualRatePercent < 0 || compoundsPerYear <= 0 || years < 0) throw new RangeError("Compounding inputs are invalid");
+  return principal * (1 + annualRatePercent / 100 / compoundsPerYear) ** (compoundsPerYear * years);
+}
