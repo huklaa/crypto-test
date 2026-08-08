@@ -34,3 +34,11 @@ console.log(getCryptoLabel(cryptoInfo));
 
 
 console.log("Codex bağlantısı aktif");
+
+
+function normalizeSymbol(symbol) {
+  if (typeof symbol !== "string") {
+    throw new TypeError("Symbol must be a string");
+  }
+  return symbol.trim().toUpperCase();
+}
