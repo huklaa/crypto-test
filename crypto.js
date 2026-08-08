@@ -289,3 +289,9 @@ function calculateAllocationPercentage(holdingValue, portfolioValue) {
   if (holdingValue < 0 || portfolioValue <= 0) throw new RangeError("Portfolio values are invalid");
   return (holdingValue / portfolioValue) * 100;
 }
+
+
+function calculateAllocationMap(holdings) {
+  var total = calculatePortfolioTotal(holdings);
+  return holdings.map(item => ({ symbol: normalizeSymbol(item.symbol), percentage: calculateAllocationPercentage(item.amount * item.price, total) }));
+}
