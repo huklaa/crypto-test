@@ -69,3 +69,9 @@ function calculateMarketCap(price, circulatingSupply) {
   }
   return price * circulatingSupply;
 }
+
+
+function calculatePortfolioTotal(holdings) {
+  if (!Array.isArray(holdings)) throw new TypeError("Holdings must be an array");
+  return holdings.reduce((total, item) => total + item.amount * item.price, 0);
+}
