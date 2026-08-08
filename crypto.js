@@ -247,3 +247,9 @@ function calculateVolatility(returns) {
   var mean = arithmeticMean(returns);
   return Math.sqrt(arithmeticMean(returns.map(value => (value - mean) ** 2)));
 }
+
+
+function calculateSimpleMovingAverage(values, period) {
+  if (!Number.isInteger(period) || period <= 0 || period > values.length) throw new RangeError("Invalid moving average period");
+  return values.slice(-period).reduce((sum, value) => sum + value, 0) / period;
+}
