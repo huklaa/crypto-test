@@ -564,3 +564,9 @@ function evaluatePriceAlert(alert, currentPrice) {
 function togglePriceAlert(alert, active = !alert.active) {
   return { ...alert, active: Boolean(active) };
 }
+
+
+function buildCoinSummary(coin, currency = "USD") {
+  var validCoin = validateCoin(coin);
+  return validCoin.name + " (" + validCoin.symbol + "): " + formatCurrency(validCoin.price, currency);
+}
