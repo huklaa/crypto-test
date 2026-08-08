@@ -53,3 +53,11 @@ function formatCurrency(value, currency = "USD", locale = "en-US") {
   if (!Number.isFinite(value)) throw new TypeError("Value must be finite");
   return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
 }
+
+
+function calculatePercentChange(previous, current) {
+  if (!Number.isFinite(previous) || !Number.isFinite(current) || previous === 0) {
+    throw new RangeError("Prices must be finite and previous price cannot be zero");
+  }
+  return ((current - previous) / previous) * 100;
+}
