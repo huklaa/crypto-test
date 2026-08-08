@@ -42,3 +42,8 @@ function normalizeSymbol(symbol) {
   }
   return symbol.trim().toUpperCase();
 }
+
+
+function isValidSymbol(symbol) {
+  return typeof symbol === "string" && /^[A-Z0-9]{2,10}$/.test(symbol.trim().toUpperCase());
+}
