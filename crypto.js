@@ -61,3 +61,11 @@ function calculatePercentChange(previous, current) {
   }
   return ((current - previous) / previous) * 100;
 }
+
+
+function calculateMarketCap(price, circulatingSupply) {
+  if (price < 0 || circulatingSupply < 0 || !Number.isFinite(price * circulatingSupply)) {
+    throw new RangeError("Price and supply must be non-negative finite numbers");
+  }
+  return price * circulatingSupply;
+}
