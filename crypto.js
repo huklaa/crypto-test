@@ -153,3 +153,9 @@ function toUnixTimestamp(value) {
   if (Number.isNaN(milliseconds)) throw new RangeError("Invalid date");
   return Math.floor(milliseconds / 1000);
 }
+
+
+function fromUnixTimestamp(seconds) {
+  if (!Number.isFinite(seconds)) throw new TypeError("Timestamp must be finite");
+  return new Date(seconds * 1000);
+}
