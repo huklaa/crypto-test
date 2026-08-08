@@ -596,3 +596,9 @@ function describePriceChange(changePercent) {
   if (changePercent < 0) return "down " + roundToDecimals(Math.abs(changePercent)) + "%";
   return "unchanged";
 }
+
+
+function calculateStakingReward(principal, annualRatePercent, days) {
+  if (principal < 0 || annualRatePercent < 0 || days < 0) throw new RangeError("Staking inputs cannot be negative");
+  return principal * annualRatePercent / 100 * days / 365;
+}
