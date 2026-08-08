@@ -140,3 +140,9 @@ function formatCompactNumber(value, locale = "en-US") {
   if (!Number.isFinite(value)) throw new TypeError("Value must be finite");
   return new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 2 }).format(value);
 }
+
+
+function formatCryptoAmount(amount, maximumFractionDigits = 8) {
+  if (!Number.isFinite(amount)) throw new TypeError("Amount must be finite");
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits, useGrouping: true }).format(amount);
+}
