@@ -260,3 +260,9 @@ function calculateExponentialMovingAverage(values, period) {
   var multiplier = 2 / (period + 1);
   return values.slice(1).reduce((ema, value) => (value - ema) * multiplier + ema, values[0]);
 }
+
+
+function calculateMomentum(prices, lookback = 1) {
+  if (!Number.isInteger(lookback) || lookback <= 0 || prices.length <= lookback) throw new RangeError("Invalid momentum lookback");
+  return prices.at(-1) - prices.at(-(lookback + 1));
+}
