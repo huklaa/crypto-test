@@ -32,3 +32,5 @@ function getCryptoLabel(crypto) {
 
 console.log(getCryptoLabel(cryptoInfo));
 
+
+console.log("Codex bağlantısı aktif");
