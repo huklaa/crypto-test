@@ -340,3 +340,9 @@ function bitcoinToSatoshis(bitcoin) {
   if (!Number.isFinite(bitcoin) || bitcoin < 0) throw new RangeError("Bitcoin amount must be non-negative");
   return Math.round(bitcoin * 100000000);
 }
+
+
+function weiToEther(wei) {
+  var value = typeof wei === "bigint" ? wei : BigInt(wei);
+  return Number(value) / 1e18;
+}
