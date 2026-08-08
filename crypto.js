@@ -513,3 +513,12 @@ function resampleDailyPrices(records) {
   mapPriceHistory(records).forEach(record => daily.set(new Date(record.timestamp).toISOString().slice(0, 10), record.price));
   return [...daily].map(([date, price]) => ({ date, price }));
 }
+
+
+function fillMissingPrices(prices) {
+  var lastKnown = null;
+  return prices.map(price => {
+    if (Number.isFinite(price)) lastKnown = price;
+    return Number.isFinite(price) ? price : lastKnown;
+  });
+}
