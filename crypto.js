@@ -271,3 +271,9 @@ function calculateMomentum(prices, lookback = 1) {
 function calculateReturn(startPrice, endPrice) {
   return calculatePercentChange(startPrice, endPrice) / 100;
 }
+
+
+function calculateLogReturn(startPrice, endPrice) {
+  if (startPrice <= 0 || endPrice <= 0) throw new RangeError("Prices must be positive");
+  return Math.log(endPrice / startPrice);
+}
