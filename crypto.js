@@ -165,3 +165,11 @@ function assertPositiveNumber(value, fieldName = "value") {
   if (!Number.isFinite(value) || value <= 0) throw new RangeError(fieldName + " must be a positive finite number");
   return value;
 }
+
+
+function validateCoin(coin) {
+  if (!coin || typeof coin !== "object") throw new TypeError("Coin must be an object");
+  var symbol = normalizeSymbol(coin.symbol);
+  if (!isValidSymbol(symbol) || typeof coin.name !== "string" || !Number.isFinite(coin.price)) throw new TypeError("Coin data is invalid");
+  return { ...coin, symbol, name: coin.name.trim() };
+}
