@@ -506,3 +506,10 @@ function groupCoinsByCategory(coins) {
 function mapPriceHistory(records) {
   return records.map(record => ({ timestamp: new Date(record.timestamp).getTime(), price: parseNumericPrice(record.price) })).sort((a, b) => a.timestamp - b.timestamp);
 }
+
+
+function resampleDailyPrices(records) {
+  var daily = new Map();
+  mapPriceHistory(records).forEach(record => daily.set(new Date(record.timestamp).toISOString().slice(0, 10), record.price));
+  return [...daily].map(([date, price]) => ({ date, price }));
+}
