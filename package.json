@@ -1,0 +1,28 @@
+{
+  "name": "crypto-utility-toolkit",
+  "version": "1.0.0",
+  "description": "Dependency-free JavaScript utilities for crypto market, portfolio, trading, and staking calculations.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check tests/market.test.js && node --check tests/portfolio.test.js && node --check tests/trading.test.js && node --check tests/staking.test.js && node --check tests/validation.test.js",
+    "check": "npm run lint && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": ["crypto", "cryptocurrency", "portfolio", "trading", "staking", "utilities"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huklaa/crypto-test.git"
+  },
+  "bugs": {
+    "url": "https://github.com/huklaa/crypto-test/issues"
+  },
+  "homepage": "https://github.com/huklaa/crypto-test#readme"
+}
