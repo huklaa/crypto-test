@@ -159,3 +159,9 @@ function fromUnixTimestamp(seconds) {
   if (!Number.isFinite(seconds)) throw new TypeError("Timestamp must be finite");
   return new Date(seconds * 1000);
 }
+
+
+function assertPositiveNumber(value, fieldName = "value") {
+  if (!Number.isFinite(value) || value <= 0) throw new RangeError(fieldName + " must be a positive finite number");
+  return value;
+}
