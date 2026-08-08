@@ -301,3 +301,11 @@ function findLargestHolding(holdings) {
   ensureNonEmptyArray(holdings, "holdings");
   return holdings.reduce((largest, item) => item.amount * item.price > largest.amount * largest.price ? item : largest);
 }
+
+
+function calculateRiskReward(entryPrice, stopPrice, targetPrice) {
+  var risk = Math.abs(entryPrice - stopPrice);
+  var reward = Math.abs(targetPrice - entryPrice);
+  if (risk === 0) throw new RangeError("Risk cannot be zero");
+  return reward / risk;
+}
