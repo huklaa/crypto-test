@@ -376,3 +376,8 @@ function deduplicateCoins(coins) {
   coins.forEach(coin => bySymbol.set(normalizeSymbol(coin.symbol), coin));
   return [...bySymbol.values()];
 }
+
+
+function indexCoinsBySymbol(coins) {
+  return Object.fromEntries(coins.map(coin => [normalizeSymbol(coin.symbol), coin]));
+}
