@@ -614,3 +614,9 @@ function calculateAnnualizedReturn(startValue, endValue, days) {
   if (startValue <= 0 || endValue < 0 || days <= 0) throw new RangeError("Annualized return inputs are invalid");
   return ((endValue / startValue) ** (365 / days) - 1) * 100;
 }
+
+
+function calculateYieldAfterFee(grossYieldPercent, platformFeePercent) {
+  if (grossYieldPercent < 0 || platformFeePercent < 0 || platformFeePercent > 100) throw new RangeError("Yield inputs are invalid");
+  return grossYieldPercent * (1 - platformFeePercent / 100);
+}
