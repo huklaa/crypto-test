@@ -47,3 +47,9 @@ function normalizeSymbol(symbol) {
 function isValidSymbol(symbol) {
   return typeof symbol === "string" && /^[A-Z0-9]{2,10}$/.test(symbol.trim().toUpperCase());
 }
+
+
+function formatCurrency(value, currency = "USD", locale = "en-US") {
+  if (!Number.isFinite(value)) throw new TypeError("Value must be finite");
+  return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
+}
