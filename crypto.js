@@ -346,3 +346,10 @@ function weiToEther(wei) {
   var value = typeof wei === "bigint" ? wei : BigInt(wei);
   return Number(value) / 1e18;
 }
+
+
+function parseNumericPrice(value) {
+  var parsed = typeof value === "string" ? Number(value.replace(/,/g, "").trim()) : value;
+  if (!Number.isFinite(parsed) || parsed < 0) throw new TypeError("Price is not a valid non-negative number");
+  return parsed;
+}
