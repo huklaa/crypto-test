@@ -87,3 +87,9 @@ function calculateDcaInvestment(amountPerPeriod, periods, assetPrice) {
   if (amountPerPeriod <= 0 || !Number.isInteger(periods) || periods <= 0 || assetPrice <= 0) throw new RangeError("DCA inputs must be positive");
   return { invested: amountPerPeriod * periods, units: (amountPerPeriod * periods) / assetPrice };
 }
+
+
+function calculateWeightedAveragePrice(purchases) {
+  var totals = purchases.reduce((acc, purchase) => ({ cost: acc.cost + purchase.price * purchase.amount, amount: acc.amount + purchase.amount }), { cost: 0, amount: 0 });
+  return totals.amount === 0 ? 0 : totals.cost / totals.amount;
+}
