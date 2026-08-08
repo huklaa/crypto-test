@@ -436,3 +436,9 @@ function calculateStopLoss(entryPrice, lossPercent) {
   if (entryPrice <= 0 || lossPercent < 0 || lossPercent >= 100) throw new RangeError("Stop loss inputs are invalid");
   return entryPrice * (1 - lossPercent / 100);
 }
+
+
+function calculateTakeProfit(entryPrice, gainPercent) {
+  if (entryPrice <= 0 || gainPercent < 0) throw new RangeError("Take profit inputs are invalid");
+  return entryPrice * (1 + gainPercent / 100);
+}
