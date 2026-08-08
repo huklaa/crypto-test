@@ -134,3 +134,9 @@ function formatCryptoDate(value, locale = "en-US") {
   if (Number.isNaN(date.getTime())) throw new RangeError("Invalid date");
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
+
+
+function formatCompactNumber(value, locale = "en-US") {
+  if (!Number.isFinite(value)) throw new TypeError("Value must be finite");
+  return new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 2 }).format(value);
+}
