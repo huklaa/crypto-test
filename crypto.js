@@ -173,3 +173,9 @@ function validateCoin(coin) {
   if (!isValidSymbol(symbol) || typeof coin.name !== "string" || !Number.isFinite(coin.price)) throw new TypeError("Coin data is invalid");
   return { ...coin, symbol, name: coin.name.trim() };
 }
+
+
+function validateHolding(holding) {
+  if (!holding || typeof holding !== "object") throw new TypeError("Holding must be an object");
+  return { symbol: normalizeSymbol(holding.symbol), amount: assertPositiveNumber(holding.amount, "amount"), price: assertPositiveNumber(holding.price, "price") };
+}
