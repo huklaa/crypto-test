@@ -185,3 +185,9 @@ function isValidCurrencyCode(code) {
   if (typeof code !== "string" || !/^[A-Z]{3}$/.test(code.toUpperCase())) return false;
   try { new Intl.NumberFormat("en", { style: "currency", currency: code.toUpperCase() }); return true; } catch { return false; }
 }
+
+
+function ensureNonEmptyArray(value, fieldName = "items") {
+  if (!Array.isArray(value) || value.length === 0) throw new TypeError(fieldName + " must be a non-empty array");
+  return value;
+}
