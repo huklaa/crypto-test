@@ -54,6 +54,7 @@ form.addEventListener("submit", async (event) => {
   loadButton.textContent = "Loading…";
   status.dataset.state = "loading";
   status.textContent = "Checking Base mainnet…";
+  document.querySelector("#explorer-link").hidden = true;
   setMessage("");
 
   try {
