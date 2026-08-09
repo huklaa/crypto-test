@@ -2,6 +2,7 @@ import { formatCryptoAmount, formatCurrency } from "../src/index.js";
 import { createBasePortfolioReader } from "./lib/baseClient.js";
 import { BASE_CHAIN_ID, BASE_EXPLORER_URL } from "./lib/baseConfig.js";
 import { analyzePortfolio } from "./lib/portfolioAnalytics.js";
+import { fetchUsdPrices } from "./lib/priceClient.js";
 import "./styles.css";
 
 const form = document.querySelector("#wallet-form");
@@ -59,9 +60,18 @@ form.addEventListener("submit", async (event) => {
 
   try {
     const network = await reader.getNetworkStatus();
-    holdings = (await reader.readPortfolio(addressInput.value.trim())).map((holding) => ({
+    const portfolio = await reader.readPortfolio(addressInput.value.trim());
+    let prices = { USDC: 1 };
+    let pricesAvailable = true;
+    try {
+      prices = await fetchUsdPrices();
+      pricesAvailable = ["ETH", "WETH", "cbETH", "cbBTC"].every((symbol) => Number.isFinite(prices[symbol]));
+    } catch {
+      pricesAvailable = false;
+    }
+    holdings = portfolio.map((holding) => ({
       ...holding,
-      price: holding.defaultPrice,
+      price: prices[holding.symbol] ?? holding.defaultPrice,
       costBasis: undefined,
       targetAllocation: undefined
     }));
@@ -70,7 +80,9 @@ form.addEventListener("submit", async (event) => {
     document.querySelector("#explorer-link").href = `${BASE_EXPLORER_URL}/address/${addressInput.value.trim()}`;
     document.querySelector("#explorer-link").hidden = false;
     render();
-    setMessage("Balances loaded. Add USD prices, optional cost basis, and target allocations to calculate analytics.");
+    setMessage(pricesAvailable
+      ? "Balances and live USD prices loaded. Add optional cost basis and target allocations to calculate analytics."
+      : "Balances loaded, but live prices are unavailable. Enter USD prices manually to calculate analytics.", pricesAvailable ? "info" : "warning");
   } catch (error) {
     status.dataset.state = "error";
     status.textContent = `Base mainnet · chain ${BASE_CHAIN_ID} · unavailable`;
