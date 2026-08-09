@@ -14,16 +14,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js 22.13
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22.13
+
+      - name: Set up pnpm 11.16
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+          run_install: false
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
+        run: pnpm install --frozen-lockfile
 
       - name: Run project checks
-        run: npm run check
+        run: pnpm run check

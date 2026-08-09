@@ -2,9 +2,11 @@
 
 [![Tests](https://github.com/huklaa/crypto-test/actions/workflows/test.yml/badge.svg)](https://github.com/huklaa/crypto-test/actions/workflows/test.yml)
 
+**Live demo:** [Base Portfolio Reader](https://huklaa.github.io/crypto-test/)
+
 A dependency-free JavaScript toolkit for common cryptocurrency calculations and data handling. It provides focused, composable functions for market analysis, portfolio tracking, trade planning, staking estimates, validation, and presentation.
 
-The project uses modern ECMAScript modules, runs on Node.js 20 or newer, and relies on Node's built-in test runner—there are no runtime or development dependencies.
+The toolkit uses modern ECMAScript modules, runs on Node.js 22.13 or newer, and has no runtime dependencies. The repository's development toolchain uses viem, Vite, Hardhat, and Node's built-in test runner.
 
 ## Features
 
@@ -14,12 +16,13 @@ The project uses modern ECMAScript modules, runs on Node.js 20 or newer, and rel
 - Measure portfolio value, profit and loss, allocations, drawdown, and DCA positions.
 - Plan trades with fees, slippage, position sizing, stop-loss, take-profit, and risk/reward calculations.
 - Estimate simple and compounded staking returns.
+- Generate deterministic portfolio proofs and read their Base Sepolia registry state.
 - Import every supported function from one stable public entry point.
 
 ## Requirements
 
-- Node.js 20 or newer
-- npm 10 or newer (included with supported Node.js releases)
+- Node.js 22.13 or newer (required by Hardhat 3 and pnpm 11)
+- pnpm 11.16 through Corepack
 
 ## Installation
 
@@ -151,10 +154,13 @@ See [`examples/base-portfolio.js`](./examples/base-portfolio.js) to adapt the da
 
 ```text
 crypto-test/
+├── contracts/         # PortfolioSnapshotRegistry Solidity source
 ├── demo/              # Read-only Base mainnet web application
 ├── docs/              # Base listing and future Builder Code guidance
 ├── examples/          # Runnable, network-free integration examples
+├── ignition/          # Repeatable Base Sepolia deployment module
 ├── src/               # Validation, formatting, market, portfolio, trading, and staking modules
+├── test/              # Hardhat + viem contract integration tests
 ├── tests/             # Node.js built-in test suites
 ├── crypto.js          # Compatibility entry point
 ├── CHANGELOG.md       # Version history
@@ -206,16 +212,65 @@ The default endpoint is Base's public `https://mainnet.base.org` RPC. Base docum
 
 The demo uses viem for typed Base chain configuration, address validation, native balance reads, ERC-20 contract calls, and unit formatting. The RPC layer lives in `demo/lib/baseClient.js`, separate from rendering and analytics, and accepts an injected client for fast unit tests. Viem is a development dependency and is excluded from the published `@huklaa/crypto-utils` package, preserving the toolkit's dependency-free runtime.
 
-GitHub Pages deployment is defined in `.github/workflows/pages.yml`. The expected URL is `https://huklaa.github.io/crypto-test/` after Pages is enabled for GitHub Actions and the workflow completes.
+GitHub Pages deployment is defined in `.github/workflows/pages.yml`. The production demo is available at [https://huklaa.github.io/crypto-test/](https://huklaa.github.io/crypto-test/).
 
 Base Dashboard listing details are prepared in [`docs/base-dashboard-listing.md`](./docs/base-dashboard-listing.md). The ERC-8021 decision and future transaction-attribution path are documented in [`docs/base-builder-codes.md`](./docs/base-builder-codes.md).
 
-## Development
+## Base Sepolia Portfolio Snapshot Contract
 
-Run the complete test suite:
+`PortfolioSnapshotRegistry` is a non-custodial proof registry. It stores the latest Keccak-256 portfolio hash, rounded USD value in cents, asset count, and timestamp for each caller. It has no owner, token, withdrawal path, or payable function and never receives portfolio assets.
+
+| Property | Value |
+| --- | --- |
+| Network | Base Sepolia |
+| Chain ID | `84532` |
+| Public RPC | `https://sepolia.base.org` |
+| Explorer | `https://base-sepolia.blockscout.com` |
+| Contract | Pending approved testnet deployment |
+| Source | [`contracts/PortfolioSnapshotRegistry.sol`](./contracts/PortfolioSnapshotRegistry.sol) |
+
+The demo creates a canonical JSON payload from positive Base mainnet balances and local USD prices. Holdings are normalized, sorted by symbol, and hashed with Keccak-256. This makes repeated calculations deterministic while keeping full portfolio data offchain.
+
+### Build, test, deploy, and verify
+
+Install development dependencies and run both JavaScript and Solidity checks:
 
 ```bash
-npm test
+pnpm install --frozen-lockfile
+pnpm run check
+pnpm run demo:build
+pnpm run demo:smoke
+```
+
+Contract-only commands:
+
+```bash
+pnpm run contract:build
+pnpm run contract:test
+```
+
+Deploying writes to Base Sepolia and consumes test ETH. Put the deployer key in a local environment or CI secret store; never commit it:
+
+```bash
+export BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+export BASE_SEPOLIA_PRIVATE_KEY=0x...
+pnpm run contract:deploy:base-sepolia
+```
+
+Verify the deployed bytecode and Solidity source through Base Sepolia Blockscout:
+
+```bash
+pnpm run contract:verify:base-sepolia -- 0xDEPLOYED_CONTRACT
+```
+
+After deployment, set `VITE_SNAPSHOT_REGISTRY_ADDRESS` when building the demo so it can read `snapshotCount` and `latestSnapshots` from Base Sepolia. The demo remains read-only and never requests a wallet signature.
+
+## Development
+
+Run the complete JavaScript and smart-contract validation suite:
+
+```bash
+npm run check
 ```
 
 Run syntax checks and tests together:
@@ -230,11 +285,11 @@ Run syntax checks only:
 npm run lint
 ```
 
-Tests use `node:test` and cover success cases, edge cases, and invalid input handling.
+JavaScript tests use `node:test`. Contract tests run on Hardhat's isolated OP-compatible local EVM with viem assertions and cover state updates, caller isolation, emitted events, and invalid inputs.
 
 ## CI / Tests
 
-GitHub Actions runs the test suite and project checks on every push and pull request using Node.js 20. The status badge at the top of this README reflects the latest workflow result on the default branch.
+GitHub Actions runs the test suite and project checks on every push and pull request using Node.js 22.13. The status badge at the top of this README reflects the latest workflow result on the default branch.
 
 ## Design Principles
 
@@ -242,6 +297,7 @@ GitHub Actions runs the test suite and project checks on every push and pull req
 - **Pure calculations:** utilities do not perform network requests or mutate caller-owned arrays.
 - **Explicit failures:** invalid numerical inputs raise `RangeError`; invalid value types raise `TypeError`.
 - **Stable imports:** consumers use `src/index.js`, while the root `crypto.js` remains a compatibility entry point.
+- **Non-custodial proofs:** the Base Sepolia registry stores compact hashes and metadata, never funds or private portfolio records.
 
 ## Disclaimer
 

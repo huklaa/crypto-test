@@ -18,19 +18,23 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "node --test",
-    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check examples/base-portfolio.js && node --check demo/app.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
+    "test": "node --test tests/*.test.js",
+    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check examples/base-portfolio.js && node --check demo/app.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/lib/priceClient.js && node --check demo/lib/snapshotRegistry.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
     "example:base": "node examples/base-portfolio.js",
     "demo:dev": "vite",
     "demo:build": "vite build --configLoader runner",
     "demo:preview": "vite preview",
     "demo:smoke": "node demo/rpc-smoke.js",
+    "contract:build": "hardhat build",
+    "contract:test": "hardhat test nodejs",
+    "contract:deploy:base-sepolia": "hardhat ignition deploy ignition/modules/PortfolioSnapshotRegistry.ts --network baseSepolia --build-profile production",
+    "contract:verify:base-sepolia": "hardhat verify --network baseSepolia --provider blockscout",
     "test:import": "node --input-type=module --eval \"import('@huklaa/crypto-utils').then((api) => { if (typeof api.calculateMarketCap !== 'function') throw new Error('Public API smoke test failed'); })\"",
-    "check": "npm run lint && npm test && npm run test:import",
+    "check": "npm run lint && npm test && npm run contract:test && npm run test:import",
     "prepublishOnly": "npm run check"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   },
   "keywords": [
     "base",
@@ -46,6 +50,7 @@
   ],
   "author": "huklaa",
   "license": "MIT",
+  "packageManager": "pnpm@11.16.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/huklaa/crypto-test.git"
@@ -58,6 +63,12 @@
     "access": "public"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.8",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.7",
+    "@types/node": "^26.2.0",
+    "hardhat": "^3.12.0",
+    "solc": "0.8.28",
+    "typescript": "^7.0.2",
     "viem": "^2.37.3",
     "vite": "^7.1.5"
   }

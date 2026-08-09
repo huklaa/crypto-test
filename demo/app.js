@@ -1,8 +1,18 @@
 import { formatCryptoAmount, formatCurrency } from "../src/index.js";
+import { isAddress } from "viem";
 import { createBasePortfolioReader } from "./lib/baseClient.js";
-import { BASE_CHAIN_ID, BASE_EXPLORER_URL } from "./lib/baseConfig.js";
+import {
+  BASE_CHAIN_ID,
+  BASE_EXPLORER_URL,
+  BASE_SEPOLIA_EXPLORER_URL,
+  SNAPSHOT_REGISTRY_ADDRESS
+} from "./lib/baseConfig.js";
 import { analyzePortfolio } from "./lib/portfolioAnalytics.js";
 import { fetchUsdPrices } from "./lib/priceClient.js";
+import {
+  createPortfolioSnapshot,
+  createSnapshotRegistryReader
+} from "./lib/snapshotRegistry.js";
 import "./styles.css";
 
 const form = document.querySelector("#wallet-form");
@@ -13,6 +23,7 @@ const summary = document.querySelector("#summary");
 const holdingsBody = document.querySelector("#holdings-body");
 const loadButton = document.querySelector("#load-button");
 const reader = createBasePortfolioReader();
+const registryReader = createSnapshotRegistryReader();
 let holdings = [];
 
 function setMessage(text, type = "info") {
@@ -42,11 +53,59 @@ function render() {
   }));
 }
 
+function renderLocalSnapshot(address) {
+  try {
+    const snapshot = createPortfolioSnapshot(address, holdings);
+    document.querySelector("#snapshot-hash").textContent = snapshot.hash;
+    document.querySelector("#snapshot-inputs").textContent = `${snapshot.assetCount} assets · ${formatCurrency(Number(snapshot.totalValueCents) / 100)}`;
+    return snapshot;
+  } catch (error) {
+    document.querySelector("#snapshot-hash").textContent = error.message;
+    document.querySelector("#snapshot-inputs").textContent = "—";
+    return null;
+  }
+}
+
+async function renderRegistryState(address) {
+  const contractLink = document.querySelector("#contract-link");
+  const registryMessage = document.querySelector("#registry-message");
+  document.querySelector("#snapshot-count").textContent = "—";
+  document.querySelector("#latest-snapshot").textContent = "—";
+
+  if (!isAddress(SNAPSHOT_REGISTRY_ADDRESS)) {
+    contractLink.hidden = true;
+    registryMessage.textContent = "Contract deployment is pending. Local snapshot generation is fully available.";
+    registryMessage.dataset.type = "info";
+    return;
+  }
+
+  contractLink.href = `${BASE_SEPOLIA_EXPLORER_URL}/address/${SNAPSHOT_REGISTRY_ADDRESS}`;
+  contractLink.hidden = false;
+  registryMessage.textContent = "Reading PortfolioSnapshotRegistry on Base Sepolia…";
+  registryMessage.dataset.type = "info";
+
+  try {
+    const [network, snapshot] = await Promise.all([
+      registryReader.getNetworkStatus(),
+      registryReader.getAccountSnapshot(address)
+    ]);
+    document.querySelector("#snapshot-count").textContent = snapshot.count.toString();
+    document.querySelector("#latest-snapshot").textContent = snapshot.hasSnapshot
+      ? new Date(snapshot.recordedAt * 1_000).toLocaleString()
+      : "No snapshot recorded";
+    registryMessage.textContent = `Contract online · Base Sepolia block ${network.blockNumber}`;
+  } catch (error) {
+    registryMessage.textContent = error.message || "Unable to read the snapshot registry";
+    registryMessage.dataset.type = "warning";
+  }
+}
+
 holdingsBody.addEventListener("input", (event) => {
   const input = event.target.closest("input[data-field]");
   if (!input) return;
   holdings[Number(input.dataset.index)][input.dataset.field] = input.value === "" ? undefined : Number(input.value);
   render();
+  renderLocalSnapshot(addressInput.value.trim());
 });
 
 form.addEventListener("submit", async (event) => {
@@ -80,6 +139,8 @@ form.addEventListener("submit", async (event) => {
     document.querySelector("#explorer-link").href = `${BASE_EXPLORER_URL}/address/${addressInput.value.trim()}`;
     document.querySelector("#explorer-link").hidden = false;
     render();
+    renderLocalSnapshot(addressInput.value.trim());
+    await renderRegistryState(addressInput.value.trim());
     setMessage(pricesAvailable
       ? "Balances and live USD prices loaded. Add optional cost basis and target allocations to calculate analytics."
       : "Balances loaded, but live prices are unavailable. Enter USD prices manually to calculate analytics.", pricesAvailable ? "info" : "warning");
