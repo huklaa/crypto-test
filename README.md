@@ -6,7 +6,7 @@
 
 A dependency-free JavaScript toolkit for common cryptocurrency calculations and data handling. It provides focused, composable functions for market analysis, portfolio tracking, trade planning, staking estimates, validation, and presentation.
 
-The published toolkit uses modern ECMAScript modules, runs on Node.js 20 or newer, and has no runtime dependencies. The repository's development toolchain uses viem, Vite, Hardhat, and Node's built-in test runner.
+The toolkit uses modern ECMAScript modules, runs on Node.js 22.13 or newer, and has no runtime dependencies. The repository's development toolchain uses viem, Vite, Hardhat, and Node's built-in test runner.
 
 ## Features
 
@@ -21,8 +21,8 @@ The published toolkit uses modern ECMAScript modules, runs on Node.js 20 or newe
 
 ## Requirements
 
-- Node.js 20 or newer
-- npm 10 or newer (included with supported Node.js releases)
+- Node.js 22.13 or newer (required by Hardhat 3 and pnpm 11)
+- pnpm 11.16 through Corepack
 
 ## Installation
 
@@ -289,7 +289,7 @@ JavaScript tests use `node:test`. Contract tests run on Hardhat's isolated OP-co
 
 ## CI / Tests
 
-GitHub Actions runs the test suite and project checks on every push and pull request using Node.js 20. The status badge at the top of this README reflects the latest workflow result on the default branch.
+GitHub Actions runs the test suite and project checks on every push and pull request using Node.js 22.13. The status badge at the top of this README reflects the latest workflow result on the default branch.
 
 ## Design Principles
 
