@@ -151,6 +151,8 @@ See [`examples/base-portfolio.js`](./examples/base-portfolio.js) to adapt the da
 
 ```text
 crypto-test/
+├── demo/              # Read-only Base mainnet web application
+├── docs/              # Base listing and future Builder Code guidance
 ├── examples/          # Runnable, network-free integration examples
 ├── src/               # Validation, formatting, market, portfolio, trading, and staking modules
 ├── tests/             # Node.js built-in test suites
@@ -160,6 +162,53 @@ crypto-test/
 ├── LICENSE            # MIT License
 └── package.json       # Package metadata and scripts
 ```
+
+## Live Base Demo / Base Mainnet Integration
+
+Base Portfolio Reader is a responsive developer demo that reads public account state from Base mainnet and feeds those balances into this toolkit's deterministic portfolio functions. Base is an Ethereum Layer 2; the integration validates mainnet chain ID `8453`, reports the latest block, and links the inspected address to the Base block explorer.
+
+The demo reads:
+
+- Native ETH with `eth_getBalance`.
+- USDC, WETH, cbETH, and cbBTC with the ERC-20 `balanceOf` function.
+- Network chain ID and latest block number for connection status.
+
+Balances are real Base mainnet data. USD prices, cost basis, and target allocations are entered locally by the user. The interface does not pretend that an RPC balance includes market pricing. It calculates holding value, portfolio total, allocation, optional profit/loss, and rebalance amounts with functions exported from `src/index.js`.
+
+The application is strictly read-only. It does **not** connect a wallet, request a private key, sign a message or transaction, transfer tokens, execute swaps, or perform financial actions.
+
+### Local development
+
+```bash
+npm install
+cp .env.example .env.local # optional
+npm run demo:dev
+```
+
+Open the local URL printed by Vite, enter any public EVM address, and select **Load portfolio**.
+
+Build and preview the production bundle:
+
+```bash
+npm run demo:build
+npm run demo:preview
+```
+
+Run a live, read-only Base RPC smoke check:
+
+```bash
+npm run demo:smoke
+```
+
+The default endpoint is Base's public `https://mainnet.base.org` RPC. Base documents this endpoint as rate-limited and unsuitable for production traffic. Set `VITE_BASE_RPC_URL` in `.env.local` to use a dedicated provider without committing an API key. Environment variables prefixed with `VITE_` are embedded in browser builds, so use only client-safe RPC URLs and apply provider-side origin restrictions where available.
+
+### Why viem?
+
+The demo uses viem for typed Base chain configuration, address validation, native balance reads, ERC-20 contract calls, and unit formatting. The RPC layer lives in `demo/lib/baseClient.js`, separate from rendering and analytics, and accepts an injected client for fast unit tests. Viem is a development dependency and is excluded from the published `@huklaa/crypto-utils` package, preserving the toolkit's dependency-free runtime.
+
+GitHub Pages deployment is defined in `.github/workflows/pages.yml`. The expected URL is `https://huklaa.github.io/crypto-test/` after Pages is enabled for GitHub Actions and the workflow completes.
+
+Base Dashboard listing details are prepared in [`docs/base-dashboard-listing.md`](./docs/base-dashboard-listing.md). The ERC-8021 decision and future transaction-attribution path are documented in [`docs/base-builder-codes.md`](./docs/base-builder-codes.md).
 
 ## Development
 
