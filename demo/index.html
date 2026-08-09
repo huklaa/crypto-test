@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read-only Base mainnet portfolio analytics powered by Crypto Utility Toolkit.">
+    <title>Base Portfolio Reader</title>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Base mainnet · read-only demo</p>
+        <h1>Portfolio analytics from public onchain data</h1>
+        <p>Inspect ETH and selected ERC-20 balances on Base, then calculate allocation, profit/loss, and rebalancing locally. No wallet connection, signature, or transaction is requested.</p>
+      </header>
+
+      <section class="panel input-panel">
+        <form id="wallet-form">
+          <label for="wallet-address">EVM wallet address</label>
+          <div class="form-row">
+            <input id="wallet-address" name="address" required autocomplete="off" placeholder="0x…" spellcheck="false">
+            <button id="load-button" type="submit">Load portfolio</button>
+          </div>
+        </form>
+        <div class="status-row">
+          <span id="network-status" data-state="idle">Base mainnet · chain 8453</span>
+          <a id="explorer-link" href="https://base.blockscout.com" target="_blank" rel="noreferrer" hidden>View on explorer</a>
+        </div>
+        <p id="message" class="message" hidden></p>
+      </section>
+
+      <section id="summary" hidden>
+        <div class="summary-grid">
+          <article class="metric"><span>Portfolio total</span><strong id="portfolio-total">$0.00</strong></article>
+          <article class="metric"><span>Assets with balance</span><strong id="asset-count">0</strong></article>
+          <article class="metric"><span>Network</span><strong>Base</strong><small>Ethereum Layer 2</small></article>
+        </div>
+
+        <div class="panel table-panel">
+          <div class="table-heading">
+            <div><h2>Holdings and allocation</h2><p>Prices and cost basis stay in your browser and are never sent to the RPC.</p></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Asset</th><th>Balance</th><th>USD price</th><th>Value</th><th>Allocation</th><th>Cost basis</th><th>P/L</th><th>Target</th><th>Rebalance</th></tr></thead>
+              <tbody id="holdings-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer>Analytics only. This demo cannot access private keys or submit Base transactions.</footer>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
