@@ -2,6 +2,7 @@ export const BASE_CHAIN_ID = 8453;
 export const BASE_RPC_URL = import.meta.env?.VITE_BASE_RPC_URL || "https://mainnet.base.org";
 export const BASE_EXPLORER_URL = "https://base.blockscout.com";
 
+
 export const BASE_TOKENS = Object.freeze([
   {
     symbol: "USDC",
@@ -25,7 +26,8 @@ export const BASE_TOKENS = Object.freeze([
   {
     symbol: "cbBTC",
     name: "Coinbase Wrapped BTC",
-    address: "0xcbb7C0000aB88B473b1f5AFd9ef808440EEd33BF",
+    address: "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
     decimals: 8
   }
 ]);
+
