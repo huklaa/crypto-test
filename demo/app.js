@@ -41,7 +41,7 @@ function render() {
   }));
 }
 
-holdingsBody.addEventListener("change", (event) => {
+holdingsBody.addEventListener("input", (event) => {
   const input = event.target.closest("input[data-field]");
   if (!input) return;
   holdings[Number(input.dataset.index)][input.dataset.field] = input.value === "" ? undefined : Number(input.value);
