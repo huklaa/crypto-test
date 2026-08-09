@@ -36,5 +36,16 @@ th, td { padding: .85rem 1rem; border-top: 1px solid #ffffff14; text-align: left
 th { color: #91a3c9; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
 td span { display: block; margin-top: .2rem; color: #91a3c9; font-size: .78rem; }
 td input { min-width: 105px; padding: .55rem; }
+.contract-panel { margin-top: 1rem; padding: 1.25rem; }
+.contract-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.contract-heading .eyebrow { margin: 0 0 .3rem; }
+.contract-heading h2 { margin: 0; }
+.contract-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: .75rem; margin-top: 1rem; }
+.contract-grid article { min-width: 0; padding: 1rem; border: 1px solid #ffffff14; border-radius: 12px; background: #071024aa; }
+.contract-grid span { display: block; margin-bottom: .55rem; color: #91a3c9; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+.contract-grid strong { font-size: 1rem; }
+.contract-grid code { display: block; overflow-wrap: anywhere; color: #a9c1ff; font-size: .78rem; line-height: 1.5; }
+.message[data-type="warning"] { color: #ffe8ad; background: #493b14; }
 footer { padding: 2rem 0; color: #7f90b5; text-align: center; font-size: .85rem; }
-@media (max-width: 720px) { main { padding-top: 2rem; } .form-row { flex-direction: column; } .summary-grid { grid-template-columns: 1fr; } button { width: 100%; } }
+@media (max-width: 900px) { .contract-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 720px) { main { padding-top: 2rem; } .form-row, .contract-heading { flex-direction: column; } .summary-grid, .contract-grid { grid-template-columns: 1fr; } button { width: 100%; } }

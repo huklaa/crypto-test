@@ -3,6 +3,10 @@ dist/
 .env
 .env.local
 coverage/
+.gas-snapshot
+artifacts/
+cache/
+types/
 .DS_Store
 *.log
 .env

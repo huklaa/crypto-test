@@ -1,6 +1,10 @@
 export const BASE_CHAIN_ID = 8453;
 export const BASE_RPC_URL = import.meta.env?.VITE_BASE_RPC_URL || "https://mainnet.base.org";
 export const BASE_EXPLORER_URL = "https://base.blockscout.com";
+export const BASE_SEPOLIA_CHAIN_ID = 84532;
+export const BASE_SEPOLIA_RPC_URL = import.meta.env?.VITE_BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
+export const BASE_SEPOLIA_EXPLORER_URL = "https://base-sepolia.blockscout.com";
+export const SNAPSHOT_REGISTRY_ADDRESS = import.meta.env?.VITE_SNAPSHOT_REGISTRY_ADDRESS || "";
 
 
 export const BASE_TOKENS = Object.freeze([
@@ -30,4 +34,3 @@ export const BASE_TOKENS = Object.freeze([
     decimals: 8
   }
 ]);
-

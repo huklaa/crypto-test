@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Read-only Base mainnet portfolio analytics powered by Crypto Utility Toolkit.">
     <meta name="base:app_id" content="6a7858ed85896ee8433316ef">
+    <meta name="talentapp:project_verification" content="null">
     <title>Base Portfolio Reader</title>
   </head>
   <body>
@@ -48,6 +49,36 @@
             </table>
           </div>
         </div>
+      </section>
+
+      <section class="panel contract-panel">
+        <div class="contract-heading">
+          <div>
+            <p class="eyebrow">Base Sepolia · portfolio proof</p>
+            <h2>Deterministic snapshot registry</h2>
+          </div>
+          <a id="contract-link" target="_blank" rel="noreferrer" hidden>View contract</a>
+        </div>
+        <p>The demo converts the loaded public balances and prices into a canonical payload and Keccak-256 hash. The deployed contract can record that compact proof without receiving or controlling funds.</p>
+        <div class="contract-grid">
+          <article>
+            <span>Local snapshot hash</span>
+            <code id="snapshot-hash">Load a funded address to generate a snapshot.</code>
+          </article>
+          <article>
+            <span>Snapshot inputs</span>
+            <strong id="snapshot-inputs">—</strong>
+          </article>
+          <article>
+            <span>Onchain records</span>
+            <strong id="snapshot-count">—</strong>
+          </article>
+          <article>
+            <span>Latest onchain snapshot</span>
+            <strong id="latest-snapshot">—</strong>
+          </article>
+        </div>
+        <p id="registry-message" class="message" data-type="info">Contract deployment is pending.</p>
       </section>
 
       <footer>Analytics only. This demo cannot access private keys or submit Base transactions.</footer>
