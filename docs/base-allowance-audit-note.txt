@@ -1,1 +1,0 @@
-Read-only Base allowance audit contribution branch. See examples/base-erc20-allowance-audit.js and docs/base-allowance-audit.md.
