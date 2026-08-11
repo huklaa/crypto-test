@@ -15,20 +15,41 @@
  *   node examples/base-nft-operator-audit.js
  */
 
+import { pathToFileURL } from 'node:url';
+
 const RPC_URL = process.env.BASE_RPC_URL || 'https://mainnet.base.org';
 const NFT_ADDRESS = process.env.NFT_ADDRESS;
 const OWNER_ADDRESS = process.env.OWNER_ADDRESS;
 const OPERATOR_ADDRESS = process.env.OPERATOR_ADDRESS;
 const BASE_MAINNET_CHAIN_ID = 8453n;
 
-function assertAddress(name, value) {
+export function assertAddress(name, value) {
   if (!/^0x[a-fA-F0-9]{40}$/.test(value || '')) {
     throw new Error(`${name} must be a valid 20-byte EVM address`);
   }
 }
 
-function padAddress(address) {
+export function padAddress(address) {
   return address.toLowerCase().replace(/^0x/, '').padStart(64, '0');
+}
+
+export function buildIsApprovedForAllCalldata(ownerAddress, operatorAddress) {
+  assertAddress('OWNER_ADDRESS', ownerAddress);
+  assertAddress('OPERATOR_ADDRESS', operatorAddress);
+  return `0xe985e9c5${padAddress(ownerAddress)}${padAddress(operatorAddress)}`;
+}
+
+export function parseBooleanWord(result) {
+  if (!/^0x[a-fA-F0-9]{64}$/.test(result || '')) {
+    throw new Error('Unexpected isApprovedForAll() response from NFT contract');
+  }
+
+  const rawValue = BigInt(result);
+  if (rawValue !== 0n && rawValue !== 1n) {
+    throw new Error('NFT contract returned a non-boolean approval value');
+  }
+
+  return rawValue === 1n;
 }
 
 async function rpc(method, params = []) {
@@ -70,8 +91,7 @@ async function main() {
     throw new Error(`Expected Base mainnet chain ID 8453, received ${chainId}`);
   }
 
-  // isApprovedForAll(address,address) selector = 0xe985e9c5
-  const data = `0xe985e9c5${padAddress(OWNER_ADDRESS)}${padAddress(OPERATOR_ADDRESS)}`;
+  const data = buildIsApprovedForAllCalldata(OWNER_ADDRESS, OPERATOR_ADDRESS);
   const result = await rpc('eth_call', [
     {
       to: NFT_ADDRESS,
@@ -80,16 +100,7 @@ async function main() {
     'latest',
   ]);
 
-  if (!/^0x[a-fA-F0-9]{64}$/.test(result || '')) {
-    throw new Error('Unexpected isApprovedForAll() response from NFT contract');
-  }
-
-  const rawValue = BigInt(result);
-  if (rawValue !== 0n && rawValue !== 1n) {
-    throw new Error('NFT contract returned a non-boolean approval value');
-  }
-
-  const approved = rawValue === 1n;
+  const approved = parseBooleanWord(result);
 
   console.log('Base NFT operator approval audit');
   console.log(`Collection: ${NFT_ADDRESS}`);
@@ -104,7 +115,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(`NFT operator audit failed: ${error.message}`);
-  process.exitCode = 1;
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(`NFT operator audit failed: ${error.message}`);
+    process.exitCode = 1;
+  });
+}
