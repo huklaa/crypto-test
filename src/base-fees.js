@@ -23,14 +23,42 @@ export function calculateBaseExecutionFee({ gasUsed, effectiveGasPrice }) {
   return toNonNegativeBigInt(gasUsed, "gasUsed") * toNonNegativeBigInt(effectiveGasPrice, "effectiveGasPrice");
 }
 
-export function calculateBaseTransactionFee({ gasUsed, effectiveGasPrice, l1Fee = 0n }) {
+export function calculateBaseOperatorFee({
+  gasUsed,
+  operatorFeeScalar,
+  operatorFeeConstant = 0n,
+  hardfork = "jovian",
+  isDeposit = false,
+}) {
+  if (typeof isDeposit !== "boolean") {
+    throw new TypeError("isDeposit must be a boolean");
+  }
+  if (isDeposit) return 0n;
+  if (hardfork !== "isthmus" && hardfork !== "jovian") {
+    throw new TypeError("hardfork must be 'isthmus' or 'jovian'");
+  }
+
+  const gas = toNonNegativeBigInt(gasUsed, "gasUsed");
+  const scalar = toNonNegativeBigInt(operatorFeeScalar, "operatorFeeScalar");
+  const constant = toNonNegativeBigInt(operatorFeeConstant, "operatorFeeConstant");
+
+  if (hardfork === "isthmus") {
+    return (gas * scalar) / 1_000_000n + constant;
+  }
+
+  return gas * scalar * 100n + constant;
+}
+
+export function calculateBaseTransactionFee({ gasUsed, effectiveGasPrice, l1Fee = 0n, operatorFee = 0n }) {
   const executionFeeWei = calculateBaseExecutionFee({ gasUsed, effectiveGasPrice });
   const l1FeeWei = toNonNegativeBigInt(l1Fee, "l1Fee");
+  const operatorFeeWei = toNonNegativeBigInt(operatorFee, "operatorFee");
 
   return {
     executionFeeWei,
     l1FeeWei,
-    totalFeeWei: executionFeeWei + l1FeeWei,
+    operatorFeeWei,
+    totalFeeWei: executionFeeWei + l1FeeWei + operatorFeeWei,
   };
 }
 
