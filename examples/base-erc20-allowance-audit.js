@@ -15,22 +15,39 @@
  *   node examples/base-erc20-allowance-audit.js
  */
 
+import { pathToFileURL } from 'node:url';
+
 const RPC_URL = process.env.BASE_RPC_URL || 'https://mainnet.base.org';
 const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS;
 const OWNER_ADDRESS = process.env.OWNER_ADDRESS;
 const SPENDER_ADDRESS = process.env.SPENDER_ADDRESS;
+const BASE_MAINNET_CHAIN_ID = 8453n;
 
-function assertAddress(name, value) {
+export function assertAddress(name, value) {
   if (!/^0x[a-fA-F0-9]{40}$/.test(value || '')) {
     throw new Error(`${name} must be a valid 20-byte EVM address`);
   }
 }
 
-function padAddress(address) {
+export function padAddress(address) {
   return address.toLowerCase().replace(/^0x/, '').padStart(64, '0');
 }
 
-async function rpc(method, params) {
+export function buildAllowanceCalldata(ownerAddress, spenderAddress) {
+  assertAddress('OWNER_ADDRESS', ownerAddress);
+  assertAddress('SPENDER_ADDRESS', spenderAddress);
+  return `0xdd62ed3e${padAddress(ownerAddress)}${padAddress(spenderAddress)}`;
+}
+
+export function parseUint256Word(result) {
+  if (!/^0x[a-fA-F0-9]{64}$/.test(result || '')) {
+    throw new Error('Unexpected allowance() response from token contract');
+  }
+
+  return BigInt(result);
+}
+
+async function rpc(method, params = []) {
   const response = await fetch(RPC_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -59,8 +76,17 @@ async function main() {
   assertAddress('OWNER_ADDRESS', OWNER_ADDRESS);
   assertAddress('SPENDER_ADDRESS', SPENDER_ADDRESS);
 
-  // allowance(address,address) selector = 0xdd62ed3e
-  const data = `0xdd62ed3e${padAddress(OWNER_ADDRESS)}${padAddress(SPENDER_ADDRESS)}`;
+  const chainIdResult = await rpc('eth_chainId');
+  if (!/^0x[a-fA-F0-9]+$/.test(chainIdResult || '')) {
+    throw new Error('Unexpected eth_chainId response');
+  }
+
+  const chainId = BigInt(chainIdResult);
+  if (chainId !== BASE_MAINNET_CHAIN_ID) {
+    throw new Error(`Expected Base mainnet chain ID 8453, received ${chainId}`);
+  }
+
+  const data = buildAllowanceCalldata(OWNER_ADDRESS, SPENDER_ADDRESS);
   const result = await rpc('eth_call', [
     {
       to: TOKEN_ADDRESS,
@@ -69,11 +95,7 @@ async function main() {
     'latest',
   ]);
 
-  if (!/^0x[a-fA-F0-9]{64}$/.test(result || '')) {
-    throw new Error('Unexpected allowance() response from token contract');
-  }
-
-  const allowance = BigInt(result);
+  const allowance = parseUint256Word(result);
 
   console.log('Base ERC-20 allowance audit');
   console.log(`Token:   ${TOKEN_ADDRESS}`);
@@ -90,7 +112,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(`Allowance audit failed: ${error.message}`);
-  process.exitCode = 1;
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(`Allowance audit failed: ${error.message}`);
+    process.exitCode = 1;
+  });
+}
