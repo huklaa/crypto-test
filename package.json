@@ -19,7 +19,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check examples/base-portfolio.js && node --check demo/app.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/lib/priceClient.js && node --check demo/lib/snapshotRegistry.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
+    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check src/base.js && node --check src/base-attribution.js && node --check examples/base-portfolio.js && node --check demo/app.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/lib/priceClient.js && node --check demo/lib/snapshotRegistry.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
     "example:base": "node examples/base-portfolio.js",
     "demo:dev": "vite",
     "demo:build": "vite build --configLoader runner",
