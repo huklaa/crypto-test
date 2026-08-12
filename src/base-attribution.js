@@ -39,6 +39,35 @@ export function applyDataSuffixToUserOperation(userOperation, suffix) {
   };
 }
 
+export function buildDataSuffixCapability(suffix, { optional = false } = {}) {
+  if (typeof optional !== "boolean") {
+    throw new TypeError("optional must be a boolean");
+  }
+
+  return {
+    dataSuffix: {
+      value: assertErc8021DataSuffix(suffix),
+      optional,
+    },
+  };
+}
+
+export function supportsDataSuffixCapability(capabilities, chainId = "0x2105") {
+  if (capabilities === null || typeof capabilities !== "object" || Array.isArray(capabilities)) {
+    throw new TypeError("capabilities must be an object");
+  }
+  if (typeof chainId !== "string" || !/^0x[0-9a-f]+$/i.test(chainId)) {
+    throw new TypeError("chainId must be a 0x-prefixed hexadecimal chain id");
+  }
+
+  const chainCapabilities = capabilities[chainId] ?? capabilities[chainId.toLowerCase()];
+  if (chainCapabilities === null || typeof chainCapabilities !== "object" || Array.isArray(chainCapabilities)) {
+    return false;
+  }
+
+  return chainCapabilities.dataSuffix?.supported === true;
+}
+
 export function hasErc8021Marker(suffix) {
   const normalizedSuffix = normalizeHexBytes(suffix, "data suffix");
   return normalizedSuffix.endsWith(ERC8021_MARKER_HEX);
