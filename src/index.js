@@ -7,4 +7,5 @@ export * from "./staking.js";
 export * from "./base.js";
 export * from "./base-attribution.js";
 export * from "./base-fees.js";
+export * from "./base-flashblocks.js";
 export * from "./base-predeploys.js";
