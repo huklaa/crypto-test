@@ -7,7 +7,9 @@ import {
   applyDataSuffixToTransaction,
   applyDataSuffixToUserOperation,
   assertErc8021DataSuffix,
+  buildDataSuffixCapability,
   hasErc8021Marker,
+  supportsDataSuffixCapability,
 } from "../src/base-attribution.js";
 
 const SAMPLE_SUFFIX = `0x076261736561707000${ERC8021_MARKER_HEX}`;
@@ -31,6 +33,42 @@ test("appends a suffix to UserOperation callData, not transaction-level data", (
 
   assert.equal(result.callData, `0xdeadbeef${SAMPLE_SUFFIX.slice(2)}`);
   assert.equal(userOperation.callData, "0xdeadbeef");
+});
+
+test("builds the ERC-5792 dataSuffix capability shape used by Base wallets", () => {
+  assert.deepEqual(buildDataSuffixCapability(SAMPLE_SUFFIX), {
+    dataSuffix: {
+      value: SAMPLE_SUFFIX,
+      optional: false,
+    },
+  });
+
+  assert.equal(buildDataSuffixCapability(SAMPLE_SUFFIX, { optional: true }).dataSuffix.optional, true);
+  assert.throws(() => buildDataSuffixCapability("0x1234"), /missing the ERC-8021 marker/);
+  assert.throws(() => buildDataSuffixCapability(SAMPLE_SUFFIX, { optional: "yes" }), /optional must be a boolean/);
+});
+
+test("detects Base dataSuffix support from wallet_getCapabilities responses", () => {
+  assert.equal(
+    supportsDataSuffixCapability({
+      "0x2105": {
+        dataSuffix: { supported: true },
+      },
+    }),
+    true,
+  );
+
+  assert.equal(
+    supportsDataSuffixCapability({
+      "0x2105": {
+        dataSuffix: { supported: false },
+      },
+    }),
+    false,
+  );
+  assert.equal(supportsDataSuffixCapability({}), false);
+  assert.throws(() => supportsDataSuffixCapability(null), /capabilities must be an object/);
+  assert.throws(() => supportsDataSuffixCapability({}, "8453"), /0x-prefixed hexadecimal chain id/);
 });
 
 test("recognizes the 16-byte ERC-8021 marker used by Base attribution", () => {
