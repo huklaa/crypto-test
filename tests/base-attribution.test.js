@@ -2,14 +2,19 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  BASE_ACCOUNT_CAPABILITY_NAMES,
+  BASE_MAINNET_CHAIN_ID_HEX,
   ERC8021_MARKER_HEX,
   appendDataSuffix,
   applyDataSuffixToTransaction,
   applyDataSuffixToUserOperation,
   assertErc8021DataSuffix,
   buildDataSuffixCapability,
+  getBaseCapabilitySummary,
+  getChainCapabilities,
   hasErc8021Marker,
   supportsDataSuffixCapability,
+  supportsWalletCapability,
 } from "../src/base-attribution.js";
 
 const SAMPLE_SUFFIX = `0x076261736561707000${ERC8021_MARKER_HEX}`;
@@ -48,27 +53,56 @@ test("builds the ERC-5792 dataSuffix capability shape used by Base wallets", () 
   assert.throws(() => buildDataSuffixCapability(SAMPLE_SUFFIX, { optional: "yes" }), /optional must be a boolean/);
 });
 
-test("detects Base dataSuffix support from wallet_getCapabilities responses", () => {
-  assert.equal(
-    supportsDataSuffixCapability({
-      "0x2105": {
-        dataSuffix: { supported: true },
-      },
-    }),
-    true,
-  );
+test("normalizes chain IDs when reading wallet_getCapabilities responses", () => {
+  const capabilities = {
+    "0x02105": {
+      atomic: { supported: true },
+      dataSuffix: { supported: true },
+    },
+  };
+
+  assert.deepEqual(getChainCapabilities(capabilities), capabilities["0x02105"]);
+  assert.equal(supportsWalletCapability(capabilities, "atomic"), true);
+  assert.equal(supportsWalletCapability(capabilities, "paymasterService"), false);
+  assert.equal(supportsDataSuffixCapability(capabilities), true);
+  assert.equal(getChainCapabilities(capabilities, "0x1"), null);
+});
+
+test("summarizes Base Account capabilities for progressive enhancement", () => {
+  const capabilities = {
+    [BASE_MAINNET_CHAIN_ID_HEX]: {
+      atomic: { supported: true },
+      paymasterService: { supported: true },
+      flowControl: { supported: false },
+      dataSuffix: { supported: true },
+      gasLimitOverride: { supported: true },
+    },
+  };
+
+  assert.deepEqual(getBaseCapabilitySummary(capabilities), {
+    atomic: true,
+    paymasterService: true,
+    flowControl: false,
+    datacallback: false,
+    dataSuffix: true,
+    gasLimitOverride: true,
+  });
+  assert.deepEqual(Object.keys(getBaseCapabilitySummary({})), [...BASE_ACCOUNT_CAPABILITY_NAMES]);
+});
+
+test("rejects malformed wallet capability inputs", () => {
+  assert.throws(() => getChainCapabilities(null), /capabilities must be an object/);
+  assert.throws(() => getChainCapabilities({}, "8453"), /0x-prefixed hexadecimal chain id/);
+  assert.throws(() => supportsWalletCapability({}, ""), /non-empty string/);
 
   assert.equal(
-    supportsDataSuffixCapability({
-      "0x2105": {
-        dataSuffix: { supported: false },
-      },
-    }),
+    getChainCapabilities({ [BASE_MAINNET_CHAIN_ID_HEX]: [] }),
+    null,
+  );
+  assert.equal(
+    supportsWalletCapability({ malformed: { atomic: { supported: true } } }, "atomic"),
     false,
   );
-  assert.equal(supportsDataSuffixCapability({}), false);
-  assert.throws(() => supportsDataSuffixCapability(null), /capabilities must be an object/);
-  assert.throws(() => supportsDataSuffixCapability({}, "8453"), /0x-prefixed hexadecimal chain id/);
 });
 
 test("recognizes the 16-byte ERC-8021 marker used by Base attribution", () => {
