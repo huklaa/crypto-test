@@ -76,4 +76,20 @@ export function calculateBaseReceiptExecutionFee(receipt) {
   });
 }
 
+export function calculateBaseReceiptTransactionFee(receipt) {
+  if (receipt === null || typeof receipt !== "object" || Array.isArray(receipt)) {
+    throw new TypeError("receipt must be an object");
+  }
+  if (receipt.gasUsed === undefined || receipt.effectiveGasPrice === undefined) {
+    throw new TypeError("receipt must include gasUsed and effectiveGasPrice");
+  }
+
+  return calculateBaseTransactionFee({
+    gasUsed: receipt.gasUsed,
+    effectiveGasPrice: receipt.effectiveGasPrice,
+    l1Fee: receipt.l1Fee ?? 0n,
+    operatorFee: receipt.operatorFee ?? 0n,
+  });
+}
+
 export { BASE_GAS_PRICE_ORACLE };
