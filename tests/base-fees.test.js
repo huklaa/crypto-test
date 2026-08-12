@@ -6,6 +6,7 @@ import {
   calculateBaseExecutionFee,
   calculateBaseOperatorFee,
   calculateBaseReceiptExecutionFee,
+  calculateBaseReceiptTransactionFee,
   calculateBaseTransactionFee,
 } from "../src/base-fees.js";
 
@@ -74,8 +75,38 @@ test("reads execution fee directly from a Base transaction receipt shape", () =>
   assert.equal(calculateBaseReceiptExecutionFee(receipt), 10_000_000_000_000n);
 });
 
+test("calculates a complete Base fee breakdown directly from receipt fields", () => {
+  assert.deepEqual(
+    calculateBaseReceiptTransactionFee({
+      gasUsed: "0x5208",
+      effectiveGasPrice: "0x3b9aca00",
+      l1Fee: "0x246139ca800",
+      operatorFee: "14700500",
+    }),
+    {
+      executionFeeWei: 21_000_000_000_000n,
+      l1FeeWei: 2_500_000_000_000n,
+      operatorFeeWei: 14_700_500n,
+      totalFeeWei: 23_500_014_700_500n,
+    },
+  );
+});
+
+test("defaults optional receipt L1 and operator fees to zero", () => {
+  assert.deepEqual(
+    calculateBaseReceiptTransactionFee({ gasUsed: 21_000n, effectiveGasPrice: 1_000_000_000n }),
+    {
+      executionFeeWei: 21_000_000_000_000n,
+      l1FeeWei: 0n,
+      operatorFeeWei: 0n,
+      totalFeeWei: 21_000_000_000_000n,
+    },
+  );
+});
+
 test("rejects invalid fee and operator-fe inputs", () => {
   assert.throws(() => calculateBaseReceiptExecutionFee({ gasUsed: "0x5208" }), /must include/);
+  assert.throws(() => calculateBaseReceiptTransactionFee({ gasUsed: "0x5208" }), /must include/);
   assert.throws(() => calculateBaseExecutionFee({ gasUsed: -1n, effectiveGasPrice: 1n }), /non-negative/);
   assert.throws(() => calculateBaseExecutionFee({ gasUsed: "21k", effectiveGasPrice: 1n }), /must be/);
   assert.throws(() => calculateBaseExecutionFee({ gasUsed: Number.MAX_SAFE_INTEGER + 1, effectiveGasPrice: 1 }), /must be/);
