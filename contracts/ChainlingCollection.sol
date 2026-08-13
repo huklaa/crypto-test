@@ -37,8 +37,16 @@ contract ChainlingCollection {
     address public immutable treasury;
     IERC20Chainling public immutable usdg;
 
-    // USDG uses 6 decimals. 0.50 USDG = 500,000 base units.
-    uint256 public constant MINT_PRICE = 500_000;
+    function mintPrice(uint256 id) public pure returns (uint256) {
+    if (id == 1) return 1_500_000; // 1.50 USDG
+    if (id == 2) return 1_000_000; // 1.00 USDG
+    if (id == 3) return 600_000;   // 0.60 USDG
+    if (id == 4) return 850_000;   // 0.85 USDG
+    if (id == 5) return 1_750_000; // 1.75 USDG
+    if (id == 6) return 500_000;   // 0.50 USDG
+    if (id == 7) return 1_250_000; // 1.25 USDG
+    revert InvalidDesign();
+}
 
     mapping(uint256 => mapping(address => uint256)) private _balances;
     mapping(address => mapping(address => bool)) private _operatorApprovals;
@@ -130,7 +138,7 @@ contract ChainlingCollection {
         uint256 nextMinted = minted[id] + amount;
         if (nextMinted > cap) revert SoldOut();
 
-        uint256 cost = MINT_PRICE * amount;
+        uint256 cost = mintPrice(id) * amount;
         if (!usdg.transferFrom(msg.sender, treasury, cost)) revert PaymentFailed();
 
         minted[id] = nextMinted;
