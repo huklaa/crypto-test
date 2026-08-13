@@ -38,6 +38,13 @@ export default defineConfig({
       url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
       accounts: [configVariable("BASE_SEPOLIA_PRIVATE_KEY")],
     },
+    robinhood: {
+      type: "http",
+      chainType: "generic",
+      chainId: 4_663,
+      url: process.env.ROBINHOOD_RPC_URL || "https://rpc.mainnet.chain.robinhood.com",
+      accounts: [configVariable("ROBINHOOD_PRIVATE_KEY")],
+    },
   },
   verify: {
     blockscout: {
