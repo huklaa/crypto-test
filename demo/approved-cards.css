@@ -1,6 +1,6 @@
 /* Approved Chainling artwork: use the exact seven card visuals supplied by the project owner. */
 .art{
-  background-image:url('/assets/approved-cards.webp')!important;
+  background-image:url('./assets/approved-cards.webp')!important;
   background-size:700% 100%!important;
   background-repeat:no-repeat!important;
   border:none!important;
@@ -14,7 +14,7 @@
 .art.design-6{background-position:83.3333% 50%!important;}
 .art.design-7{background-position:100% 50%!important;}
 .hero-card.design-1{
-  background-image:url('/assets/approved-cards.webp')!important;
+  background-image:url('./assets/approved-cards.webp')!important;
   background-size:700% 100%!important;
   background-position:0% 50%!important;
   background-repeat:no-repeat!important;
