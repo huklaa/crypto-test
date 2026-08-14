@@ -2,11 +2,22 @@ const PROJECT_ID=window.CHAINLING_WALLETCONNECT_PROJECT_ID;
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
 const EXPLORER="https://robinhoodchain.blockscout.com";
 let appKitPromise=null;
-let providerWaiter=null;
+let connectionTimer=null;
+let lastProvider=null;
+let handoffDone=false;
 
 function announceProvider(provider){
   if(!provider||typeof provider.request!=="function")throw new Error("WalletConnect provider was not available.");
+  lastProvider=provider;
   window.dispatchEvent(new CustomEvent("eip6963:announceProvider",{detail:{info:{uuid:"6dd58eb5-73ec-48d6-85e2-0423ae0ee61b",name:"WalletConnect",icon:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B99FC'/%3E%3Cpath d='M16 25c9-9 23-9 32 0l3 3-4 4-3-3c-7-7-17-7-24 0l-3 3-4-4 3-3Zm6 7c6-6 14-6 20 0l3 3-4 4-3-3c-3-3-9-3-12 0l-3 3-4-4 3-3Z' fill='white'/%3E%3C/svg%3E",rdns:"com.reown.walletconnect"},provider}}));
+}
+
+function triggerChainlingHandoff(provider){
+  if(handoffDone||!provider)return;
+  handoffDone=true;
+  announceProvider(provider);
+  document.querySelector("#chainling-wallet-chooser")?.remove();
+  setTimeout(()=>document.querySelector(".wallet-btn[data-connect]")?.click(),150);
 }
 
 async function getAppKit(){
@@ -38,34 +49,48 @@ async function getAppKit(){
       enableMobileFullScreen:true,
       features:{analytics:false,email:false,socials:[]}
     });
+
+    modal.subscribeProvider(state=>{
+      const provider=state?.provider||modal.getWalletProvider?.();
+      if(state?.isConnected&&provider){
+        clearTimeout(connectionTimer);
+        triggerChainlingHandoff(provider);
+      }
+    });
+
     modal.subscribeProviders(state=>{
       const provider=state?.eip155;
-      if(provider&&providerWaiter){const resolve=providerWaiter;providerWaiter=null;resolve(provider)}
+      if(provider)lastProvider=provider;
     });
+
     return modal;
   })();
   return appKitPromise;
 }
 
+async function resumeConnectedSession(){
+  try{
+    const modal=await getAppKit();
+    if(!modal.getIsConnected?.())return;
+    const provider=modal.getWalletProvider?.()||modal.getProviders?.()?.eip155||lastProvider;
+    if(provider)triggerChainlingHandoff(provider);
+  }catch(error){console.error("Chainling Reown resume error",error)}
+}
+
 async function openReownWallets(){
   const chooser=document.querySelector("#chainling-wallet-chooser");
-  const note=chooser?.querySelector("[data-wallet-note]");
   try{
-    if(note)note.textContent="Opening wallet list…";
-    const modal=await getAppKit();
-    const existing=modal.getProviders?.()?.eip155;
-    if(existing){announceProvider(existing);chooser?.remove();document.querySelector(".wallet-btn[data-connect]")?.click();return}
-    const providerPromise=new Promise((resolve,reject)=>{
-      providerWaiter=resolve;
-      setTimeout(()=>{if(providerWaiter){providerWaiter=null;reject(new Error("Wallet connection timed out."))}},120000);
-    });
-    await modal.open({view:"Connect",namespace:"eip155"});
-    const provider=await providerPromise;
-    announceProvider(provider);
+    handoffDone=false;
     chooser?.remove();
-    document.querySelector(".wallet-btn[data-connect]")?.click();
+    const modal=await getAppKit();
+    const existing=modal.getWalletProvider?.()||modal.getProviders?.()?.eip155;
+    if(modal.getIsConnected?.()&&existing){triggerChainlingHandoff(existing);return}
+    await modal.open({view:"Connect",namespace:"eip155"});
+    clearTimeout(connectionTimer);
+    connectionTimer=setTimeout(()=>{
+      if(!handoffDone)console.warn("WalletConnect is still waiting for the wallet approval/return flow.");
+    },120000);
   }catch(error){
-    if(note)note.textContent=error?.message||"Could not open wallet list.";
     console.error("Chainling Reown connection error",error);
   }
 }
@@ -78,3 +103,7 @@ document.addEventListener("click",event=>{
   event.stopImmediatePropagation();
   void openReownWallets();
 },true);
+
+window.addEventListener("focus",()=>void resumeConnectedSession());
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")void resumeConnectedSession()});
+void resumeConnectedSession();
