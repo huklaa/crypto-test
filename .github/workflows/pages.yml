@@ -9,6 +9,7 @@ on:
       - "vite.config.js"
       - "package.json"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
