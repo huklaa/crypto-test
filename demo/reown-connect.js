@@ -9,6 +9,13 @@ let appKitPromise=null;
 let connectionTimer=null;
 let handoffDone=false;
 
+async function completeHandoff(modal){
+  const provider=modal.getWalletProvider?.();
+  if(!modal.getIsConnectedState?.()||!provider)return;
+  try{await modal.close?.()}catch{}
+  triggerChainlingHandoff(provider);
+}
+
 function announceProvider(provider){
   if(!provider||typeof provider.request!=="function")throw new Error("WalletConnect provider was not available.");
   window.dispatchEvent(new CustomEvent("eip6963:announceProvider",{detail:{info:{uuid:"6dd58eb5-73ec-48d6-85e2-0423ae0ee61b",name:"WalletConnect",icon:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B99FC'/%3E%3Cpath d='M16 25c9-9 23-9 32 0l3 3-4 4-3-3c-7-7-17-7-24 0l-3 3-4-4 3-3Zm6 7c6-6 14-6 20 0l3 3-4 4-3-3c-3-3-9-3-12 0l-3 3-4-4 3-3Z' fill='white'/%3E%3C/svg%3E",rdns:"com.reown.walletconnect"},provider}}));
@@ -49,7 +56,13 @@ async function getAppKit(){
       adapters:[new EthersAdapter()],
       networks:[robinhood],
       projectId:PROJECT_ID,
-      metadata:{name:"Chainling",description:"Chainling Early Explorer souvenir NFTs",url:location.origin,icons:[]},
+      metadata:{
+        name:"Chainling",
+        description:"Chainling Early Explorer souvenir NFTs",
+        url:"https://chainling.xyz",
+        icons:[],
+        redirect:{universal:"https://chainling.xyz/#home"}
+      },
       allWallets:"SHOW",
       enableWallets:true,
       enableReconnect:true,
@@ -59,9 +72,9 @@ async function getAppKit(){
     });
 
     modal.subscribeAccount(state=>{
-      const provider=modal.getWalletProvider?.();
-      if(state?.isConnected&&provider)triggerChainlingHandoff(provider);
-    });
+      if(state?.isConnected)void completeHandoff(modal);
+    },"eip155");
+    modal.subscribeProviders(()=>void completeHandoff(modal));
 
     return modal;
   })().catch(error=>{
@@ -74,8 +87,7 @@ async function getAppKit(){
 async function resumeConnectedSession(){
   try{
     const modal=await getAppKit();
-    const provider=modal.getWalletProvider?.();
-    if(modal.getIsConnectedState?.()&&provider)triggerChainlingHandoff(provider);
+    await completeHandoff(modal);
   }catch(error){
     console.error("Chainling Reown resume error",error);
   }
