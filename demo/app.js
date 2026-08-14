@@ -74,19 +74,14 @@ function choosePreferredInjected(){
     ||candidates[0]
     ||null;
 }
-function currentPageUrl(){return `${location.origin}${location.pathname}${location.search}${location.hash}`}
-function trustDeepLink(){return `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(currentPageUrl())}`}
-function coinbaseDeepLink(){return `https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(currentPageUrl())}`}
 function closeWalletChooser(){document.querySelector("#chainling-wallet-chooser")?.remove()}
 function showWalletChooser(){
   closeWalletChooser();
   const overlay=document.createElement("div");overlay.id="chainling-wallet-chooser";overlay.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);display:grid;place-items:center;padding:20px";
   const panel=document.createElement("div");panel.style.cssText="width:min(420px,100%);background:#07100d;border:1px solid rgba(120,255,34,.28);border-radius:22px;padding:22px;color:#fff;font-family:inherit;box-shadow:0 20px 70px rgba(0,0,0,.55)";
-  panel.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px"><strong style="font-size:22px;color:#78ff22">Connect Wallet</strong><button type="button" data-close style="border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer">×</button></div><p style="margin:0 0 16px;color:#aab5af;line-height:1.5">Open Chainling inside a wallet browser, or use WalletConnect when configured.</p><div data-wallet-actions style="display:grid;gap:10px"></div><p data-wallet-note style="margin:14px 0 0;color:#87928c;font-size:13px;line-height:1.45"></p>';
+  panel.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px"><strong style="font-size:22px;color:#78ff22">Connect Wallet</strong><button type="button" data-close style="border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer">×</button></div><p style="margin:0 0 16px;color:#aab5af;line-height:1.5">Choose your wallet with WalletConnect. Chainling stays open in Chrome while you select a wallet.</p><div data-wallet-actions style="display:grid;gap:10px"></div><p data-wallet-note style="margin:14px 0 0;color:#87928c;font-size:13px;line-height:1.45"></p>';
   const actions=panel.querySelector("[data-wallet-actions]");
   const addAction=(label,handler)=>{const button=document.createElement("button");button.type="button";button.textContent=label;button.style.cssText="width:100%;padding:14px 16px;border:1px solid rgba(120,255,34,.35);border-radius:14px;background:#102118;color:#fff;font:inherit;font-weight:700;cursor:pointer";button.addEventListener("click",handler);actions.append(button)};
-  addAction("Open in Trust Wallet",()=>{location.href=trustDeepLink()});
-  addAction("Open in Base / Coinbase Wallet",()=>{location.href=coinbaseDeepLink()});
   addAction("WalletConnect",async()=>{const note=panel.querySelector("[data-wallet-note]");try{const projectId=window.CHAINLING_WALLETCONNECT_PROJECT_ID;if(!projectId){note.textContent="WalletConnect needs a project ID. Open this page in Trust Wallet or Base App for now.";return}note.textContent="Opening WalletConnect…";const module=await import(/* @vite-ignore */"https://esm.sh/@walletconnect/ethereum-provider@2.21.1");const EthereumProvider=module.default;const provider=await EthereumProvider.init({projectId,chains:[4663],optionalChains:[4663],showQrModal:true,rpcMap:{4663:RPC_URL},metadata:{name:"Chainling",description:"Chainling Early Explorer",url:location.origin,icons:[]}});await provider.connect();activeProvider=provider;activeProviderInfo={name:"WalletConnect"};closeWalletChooser();await finishWalletConnection(provider)}catch(error){note.textContent=errorMessage(error)}});
   panel.querySelector("[data-close]").addEventListener("click",closeWalletChooser);overlay.addEventListener("click",event=>{if(event.target===overlay)closeWalletChooser()});overlay.append(panel);document.body.append(overlay);
 }

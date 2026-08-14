@@ -58,8 +58,8 @@ async function getAppKit(){
       features:{analytics:false,email:false,socials:[]}
     });
 
-    modal.subscribeProvider(state=>{
-      const provider=state?.provider||modal.getWalletProvider?.();
+    modal.subscribeAccount(state=>{
+      const provider=modal.getWalletProvider?.();
       if(state?.isConnected&&provider)triggerChainlingHandoff(provider);
     });
 
@@ -75,7 +75,7 @@ async function resumeConnectedSession(){
   try{
     const modal=await getAppKit();
     const provider=modal.getWalletProvider?.();
-    if(modal.getIsConnected?.()&&provider)triggerChainlingHandoff(provider);
+    if(modal.getIsConnectedState?.()&&provider)triggerChainlingHandoff(provider);
   }catch(error){
     console.error("Chainling Reown resume error",error);
   }
@@ -87,7 +87,7 @@ async function openReownWallets(){
   try{
     const modal=await getAppKit();
     const existing=modal.getWalletProvider?.();
-    if(modal.getIsConnected?.()&&existing){
+    if(modal.getIsConnectedState?.()&&existing){
       triggerChainlingHandoff(existing);
       return;
     }
