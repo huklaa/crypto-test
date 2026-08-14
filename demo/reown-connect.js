@@ -1,6 +1,6 @@
-import {createAppKit} from "@reown/appkit";
-import {EthersAdapter} from "@reown/appkit-adapter-ethers";
-import {defineChain} from "@reown/appkit/networks";
+import {createAppKit} from "https://esm.sh/@reown/appkit?bundle";
+import {EthersAdapter} from "https://esm.sh/@reown/appkit-adapter-ethers?bundle";
+import {defineChain} from "https://esm.sh/@reown/appkit/networks?bundle";
 
 const PROJECT_ID=window.CHAINLING_WALLETCONNECT_PROJECT_ID;
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
@@ -82,9 +82,8 @@ async function resumeConnectedSession(){
 }
 
 async function openReownWallets(){
-  const chooser=document.querySelector("#chainling-wallet-chooser");
   handoffDone=false;
-  chooser?.remove();
+  document.querySelector("#chainling-wallet-chooser")?.remove();
   try{
     const modal=await getAppKit();
     const existing=modal.getWalletProvider?.();
