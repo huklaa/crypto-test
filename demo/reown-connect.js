@@ -1,3 +1,7 @@
+import {createAppKit} from "@reown/appkit";
+import {EthersAdapter} from "@reown/appkit-adapter-ethers";
+import {defineChain} from "@reown/appkit/networks";
+
 const PROJECT_ID=window.CHAINLING_WALLETCONNECT_PROJECT_ID;
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
 const EXPLORER="https://robinhoodchain.blockscout.com";
@@ -32,11 +36,6 @@ async function getAppKit(){
   if(appKitPromise)return appKitPromise;
   appKitPromise=(async()=>{
     if(!PROJECT_ID)throw new Error("Reown Project ID is missing.");
-    const [{createAppKit},{EthersAdapter},{defineChain}]=await Promise.all([
-      import(/* @vite-ignore */"https://esm.sh/@reown/appkit?bundle"),
-      import(/* @vite-ignore */"https://esm.sh/@reown/appkit-adapter-ethers?bundle"),
-      import(/* @vite-ignore */"https://esm.sh/@reown/appkit/networks?bundle")
-    ]);
     const robinhood=defineChain({
       id:4663,
       caipNetworkId:"eip155:4663",
@@ -53,6 +52,7 @@ async function getAppKit(){
       metadata:{name:"Chainling",description:"Chainling Early Explorer souvenir NFTs",url:location.origin,icons:[]},
       allWallets:"SHOW",
       enableWallets:true,
+      enableReconnect:true,
       enableNetworkSwitch:true,
       enableMobileFullScreen:true,
       features:{analytics:false,email:false,socials:[]}
@@ -106,7 +106,7 @@ document.addEventListener("click",event=>{
   const button=event.target?.closest?.("#chainling-wallet-chooser button");
   if(!button)return;
   const label=button.textContent.trim();
-  if(label!=="WalletConnect"&&label!=="Open in Trust Wallet"&&label!=="Open in Base / Coinbase Wallet")return;
+  if(label!=="WalletConnect")return;
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
@@ -118,3 +118,5 @@ window.addEventListener("focus",()=>void resumeConnectedSession());
 document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="visible")void resumeConnectedSession();
 });
+
+void resumeConnectedSession();
