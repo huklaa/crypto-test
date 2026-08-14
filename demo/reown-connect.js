@@ -10,13 +10,22 @@ function announceProvider(provider){
   window.dispatchEvent(new CustomEvent("eip6963:announceProvider",{detail:{info:{uuid:"6dd58eb5-73ec-48d6-85e2-0423ae0ee61b",name:"WalletConnect",icon:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B99FC'/%3E%3Cpath d='M16 25c9-9 23-9 32 0l3 3-4 4-3-3c-7-7-17-7-24 0l-3 3-4-4 3-3Zm6 7c6-6 14-6 20 0l3 3-4 4-3-3c-3-3-9-3-12 0l-3 3-4-4 3-3Z' fill='white'/%3E%3C/svg%3E",rdns:"com.reown.walletconnect"},provider}}));
 }
 
+function exposeProvider(provider){
+  try{
+    Object.defineProperty(window,"ethereum",{configurable:true,writable:true,value:provider});
+  }catch{
+    try{window.ethereum=provider}catch{}
+  }
+}
+
 function triggerChainlingHandoff(provider){
   if(handoffDone||!provider||typeof provider.request!=="function")return;
   handoffDone=true;
   clearTimeout(connectionTimer);
+  exposeProvider(provider);
   announceProvider(provider);
   document.querySelector("#chainling-wallet-chooser")?.remove();
-  setTimeout(()=>document.querySelector(".wallet-btn[data-connect]")?.click(),120);
+  setTimeout(()=>document.querySelector(".wallet-btn[data-connect]")?.click(),180);
 }
 
 async function getAppKit(){
@@ -90,7 +99,6 @@ async function openReownWallets(){
     },120000);
   }catch(error){
     console.error("Chainling Reown connection error",error);
-    setTimeout(()=>document.querySelector(".wallet-btn[data-connect]")?.click(),100);
   }
 }
 
@@ -102,6 +110,7 @@ document.addEventListener("click",event=>{
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
+  document.querySelector("#chainling-wallet-chooser")?.remove();
   void openReownWallets();
 },true);
 
