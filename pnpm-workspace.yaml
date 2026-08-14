@@ -1,4 +1,5 @@
 allowBuilds:
+  '@reown/appkit': true
   esbuild: true
 packages: []
 
