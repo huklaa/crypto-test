@@ -54,3 +54,74 @@
 
 .nft-card:nth-child(7) .art,
 .hero-card.design-7 { background-image: url('./assets/nft-7.png'); }
+
+/* Flock + Nest ecosystem preview. This is presentation-only: mint, wallet and contract logic remain untouched. */
+.collection::before {
+  content: "Collect a Chainling.  Join the Flock.  Earn your Feathers. 🪶\A\ASeven unique fledglings. One growing ecosystem. Mint your favorite, join the community and be part of something early.\A\A①  COLLECT A CHAINLING\AChoose one of the 7 unique Chainlings. Each design represents a different fledgling and identity within the Flock.\A\A②  JOIN THE FLOCK\AConnect your wallet and build your Nest. Your Chainlings, badges, mint history and progress will live here as the ecosystem grows.\A\A③  EARN YOUR FEATHERS\AQuests, events and ecosystem exploration may unlock Feathers in the future. Feathers are planned for upgrades, perks and other Chainling utility.\A\AYOUR NEST\AConnect your wallet to discover your Nest.\AChainlings  —    Unique Flocks  — / 7    Feathers  — Coming Soon    Badges  — Coming Soon    Full Flock  — / 7";
+  display: block;
+  white-space: pre-line;
+  margin: 0 0 30px;
+  padding: clamp(26px,4vw,48px);
+  border: 1px solid #285044;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 78% 18%, #74ff231a 0, transparent 23rem),
+    linear-gradient(145deg, #07110f 0%, #030807 58%, #06100d 100%);
+  box-shadow: 0 30px 90px #000b, inset 0 0 55px #64ff1008;
+  color: #a8b8b3;
+  font-size: clamp(.9rem,1.3vw,1.02rem);
+  line-height: 1.72;
+  letter-spacing: .005em;
+}
+
+.collection::first-line {
+  color: #f5faf7;
+  font-size: clamp(1.8rem,4vw,3.55rem);
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.nft-card b::after {
+  display: block;
+  margin-top: 5px;
+  font-size: .78rem;
+  line-height: 1.2;
+  font-weight: 800;
+  color: currentColor;
+}
+.nft-card:nth-child(1) b::after { content: "Genesis Finch"; }
+.nft-card:nth-child(2) b::after { content: "Lumen Hawk"; }
+.nft-card:nth-child(3) b::after { content: "Prism Owl"; }
+.nft-card:nth-child(4) b::after { content: "Orbit Swift"; }
+.nft-card:nth-child(5) b::after { content: "Ember Falcon"; }
+.nft-card:nth-child(6) b::after { content: "Aqua Kingfisher"; }
+.nft-card:nth-child(7) b::after { content: "Pulse Hummingbird"; }
+
+.collection::after {
+  content: "✓  Built on Robinhood Chain     ◈  On-chain Mint     ◎  Community First     🪶  More Coming Soon";
+  display: block;
+  margin-top: 28px;
+  padding: 20px 24px;
+  border: 1px solid #1f3d35;
+  border-radius: 16px;
+  background: linear-gradient(90deg,#07100f,#030807,#07100f);
+  color: #dce8e3;
+  text-align: center;
+  font-size: .92rem;
+  font-weight: 700;
+  word-spacing: .32em;
+}
+
+@media (max-width:760px) {
+  .collection::before {
+    padding: 24px 20px;
+    margin-bottom: 24px;
+    line-height: 1.62;
+  }
+  .collection::after {
+    text-align: left;
+    line-height: 2;
+    word-spacing: normal;
+  }
+  .nft-card b::after { font-size: .72rem; }
+}
