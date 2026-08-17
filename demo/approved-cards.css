@@ -55,28 +55,27 @@
 .nft-card:nth-child(7) .art,
 .hero-card.design-7 { background-image: url('./assets/nft-7.png'); }
 
-/* Flock + Nest ecosystem preview. This is presentation-only: mint, wallet and contract logic remain untouched. */
+/* Clean Flock + Nest preview. Presentation only; mint and wallet logic are untouched. */
 .collection::before {
-  content: "Collect a Chainling.  Join the Flock.  Earn your Feathers. 🪶\A\ASeven unique fledglings. One growing ecosystem. Mint your favorite, join the community and be part of something early.\A\A①  COLLECT A CHAINLING\AChoose one of the 7 unique Chainlings. Each design represents a different fledgling and identity within the Flock.\A\A②  JOIN THE FLOCK\AConnect your wallet and build your Nest. Your Chainlings, badges, mint history and progress will live here as the ecosystem grows.\A\A③  EARN YOUR FEATHERS\AQuests, events and ecosystem exploration may unlock Feathers in the future. Feathers are planned for upgrades, perks and other Chainling utility.\A\AYOUR NEST\AConnect your wallet to discover your Nest.\AChainlings  —    Unique Flocks  — / 7    Feathers  — Coming Soon    Badges  — Coming Soon    Full Flock  — / 7";
+  content: "Collect a Chainling. Join the Flock. Earn your Feathers. 🪶\A\ASeven unique fledglings. One growing ecosystem.\A\A① COLLECT A CHAINLING  —  Mint one of the 7 unique Chainlings. Each design represents a different fledgling and identity within the Flock.\A\A② JOIN THE FLOCK  —  Connect your wallet and build your Nest. Your Chainlings, badges, mint history and progress can live here as the ecosystem grows.\A\A③ EARN YOUR FEATHERS  —  Quests, events and ecosystem exploration may unlock Feathers in the future for upgrades, perks and other Chainling utility.";
   display: block;
   white-space: pre-line;
-  margin: 0 0 30px;
-  padding: clamp(26px,4vw,48px);
+  margin: 0 0 22px;
+  padding: clamp(26px,4vw,44px);
   border: 1px solid #285044;
   border-radius: 20px;
   background:
-    radial-gradient(circle at 78% 18%, #74ff231a 0, transparent 23rem),
-    linear-gradient(145deg, #07110f 0%, #030807 58%, #06100d 100%);
-  box-shadow: 0 30px 90px #000b, inset 0 0 55px #64ff1008;
-  color: #a8b8b3;
-  font-size: clamp(.9rem,1.3vw,1.02rem);
-  line-height: 1.72;
-  letter-spacing: .005em;
+    radial-gradient(circle at 82% 12%, #74ff2318 0, transparent 22rem),
+    linear-gradient(145deg, #07110f 0%, #030807 62%, #06100d 100%);
+  box-shadow: 0 25px 70px #0009, inset 0 0 50px #64ff1006;
+  color: #aebdb8;
+  font-size: clamp(.92rem,1.2vw,1.02rem);
+  line-height: 1.7;
 }
 
 .collection::first-line {
   color: #f5faf7;
-  font-size: clamp(1.8rem,4vw,3.55rem);
+  font-size: clamp(1.75rem,3.5vw,3.1rem);
   font-weight: 900;
   line-height: 1.08;
 }
@@ -98,30 +97,40 @@
 .nft-card:nth-child(7) b::after { content: "Pulse Hummingbird"; }
 
 .collection::after {
-  content: "✓  Built on Robinhood Chain     ◈  On-chain Mint     ◎  Community First     🪶  More Coming Soon";
+  content: "YOUR NEST   ·   Connect your wallet to discover your Nest   ·   Chainlings —   ·   Unique Flocks — / 7   ·   Feathers — Coming Soon   ·   Badges — Coming Soon   ·   Full Flock — / 7";
   display: block;
-  margin-top: 28px;
-  padding: 20px 24px;
-  border: 1px solid #1f3d35;
+  margin-top: 26px;
+  padding: 18px 22px;
+  border: 1px solid #285044;
   border-radius: 16px;
   background: linear-gradient(90deg,#07100f,#030807,#07100f);
   color: #dce8e3;
   text-align: center;
-  font-size: .92rem;
+  font-size: .9rem;
   font-weight: 700;
-  word-spacing: .32em;
+  line-height: 1.65;
+}
+
+/* Remove the old generated duplicate Collection Principles / Notes blocks. */
+.about-grid::before,
+.about-grid::after {
+  display: none !important;
+  content: none !important;
 }
 
 @media (max-width:760px) {
   .collection::before {
     padding: 24px 20px;
-    margin-bottom: 24px;
-    line-height: 1.62;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .collection::first-line {
+    font-size: 1.7rem;
   }
   .collection::after {
     text-align: left;
-    line-height: 2;
-    word-spacing: normal;
+    padding: 17px 18px;
+    font-size: .84rem;
   }
   .nft-card b::after { font-size: .72rem; }
 }
