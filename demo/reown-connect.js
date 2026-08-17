@@ -163,3 +163,4 @@ document.addEventListener("DOMContentLoaded",addSocialPlaceholders,{once:true});
 if(document.readyState!=="loading")addSocialPlaceholders();
 
 void resumeConnectedSession();
+void import("./landing.js").catch(error=>console.error("Chainling landing layer error",error));
