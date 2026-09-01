@@ -15,7 +15,7 @@ function short(value){return `${value.slice(0,6)}…${value.slice(-4)}`}
 export function initFreeMintCampaign(){
   const collection=document.querySelector("#collection");
   if(!collection||document.querySelector("#free-mint"))return;
-  document.querySelector(".nav-links")?.insertAdjacentHTML("beforeend",'<a href="#free-mint">Free Mint</a>');
+  document.querySelector(".nav-links")?.insertAdjacentHTML("afterbegin",'<a class="nav-free-mint" href="#free-mint">Free Mint</a>');
   const section=document.createElement("section");
   section.id="free-mint";
   section.className="free-mint-campaign panel";
@@ -35,6 +35,34 @@ export function initFreeMintCampaign(){
       <p class="free-mint-status" aria-live="polite">Task completion is self-confirmed and is not automatically verified by X. Contract deployment is pending.</p>
     </div>`;
   collection.insertAdjacentElement("afterend",section);
+
+  const promoteCampaign=()=>{
+    const landing=document.querySelector(".chainling-landing");
+    if(!landing)return false;
+    landing.insertAdjacentElement("afterend",section);
+    const copy=landing.querySelector(".landing-copy");
+    if(copy&&!copy.querySelector(".landing-free-callout")){
+      copy.insertAdjacentHTML("afterbegin",'<a class="landing-free-callout" href="#free-mint"><span>LIMITED FREE MINT</span><strong>#6 Aqua Kingfisher · 8,888 supply · 1 per wallet</strong></a>');
+    }
+    const actions=landing.querySelector(".landing-actions");
+    if(actions&&!actions.querySelector("[data-go-free-mint]")){
+      const button=document.createElement("button");
+      button.className="landing-primary landing-free-mint";
+      button.type="button";
+      button.dataset.goFreeMint="";
+      button.textContent="Claim Free #6";
+      button.addEventListener("click",()=>section.scrollIntoView({behavior:"smooth",block:"start"}));
+      actions.prepend(button);
+      const collectionButton=actions.querySelector("[data-go-mint]");
+      if(collectionButton){collectionButton.textContent="Explore Collection";collectionButton.className="landing-secondary"}
+    }
+    return true;
+  };
+  if(!promoteCampaign()){
+    const observer=new MutationObserver(()=>{if(promoteCampaign())observer.disconnect()});
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+    setTimeout(()=>observer.disconnect(),12000);
+  }
 
   const tasks=[...section.querySelectorAll("[data-free-task]")];
   const claimButton=section.querySelector(".free-mint-claim");

@@ -1,4 +1,8 @@
-.free-mint-campaign{margin-top:16px;padding:clamp(24px,4vw,42px);display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:clamp(24px,5vw,64px);align-items:center;border-color:#277a78;background:radial-gradient(circle at 12% 35%,#0a57534d,transparent 29rem),linear-gradient(145deg,#061312,#020707 70%)}
+.nav-free-mint{color:#2df5d1!important;font-weight:900;text-shadow:0 0 18px #2df5d177}
+.landing-free-callout{display:grid;gap:5px;width:fit-content;margin:0 0 20px;padding:11px 15px;border:1px solid #2df5d188;border-radius:12px;background:linear-gradient(90deg,#092724,#061412);box-shadow:0 0 28px #2df5d122;color:#efffff}
+.landing-free-callout span{color:#2df5d1;font-size:.72rem;font-weight:950;letter-spacing:.15em}.landing-free-callout strong{font-size:.9rem}
+.landing-free-mint{background:linear-gradient(90deg,#20d8c8,#5eeeff)!important;box-shadow:0 0 30px #2df5d133}
+.free-mint-campaign{margin-top:16px;padding:clamp(24px,4vw,42px);display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:clamp(24px,5vw,64px);align-items:center;border:1px solid #2df5d177;background:radial-gradient(circle at 12% 35%,#0a575366,transparent 29rem),linear-gradient(145deg,#061b19,#020707 70%);box-shadow:0 0 50px #2df5d118,0 25px 80px #0009}
 .free-mint-art{aspect-ratio:2/3;border:1px solid #2df5d1;border-radius:18px;background:url('./assets/nft-6.png') center/cover no-repeat;box-shadow:0 0 42px #2df5d144}
 .free-mint-copy h2{font-size:clamp(2rem,4.2vw,4rem);line-height:1;margin:7px 0 16px}.free-mint-copy h2 span{color:#2df5d1}.free-mint-lead{color:#b7c8c3;font-size:1.05rem;line-height:1.65;max-width:760px}
 .free-mint-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.free-mint-stats div{border:1px solid #21443e;border-radius:12px;padding:14px;background:#04100e}.free-mint-stats span,.free-mint-task small{display:block;color:#849a94;font-size:.78rem}.free-mint-stats strong{display:block;margin-top:5px;color:#f2faf7}
