@@ -1,0 +1,11 @@
+{
+  "name": "Chainling #6 — Aqua Kingfisher Free Mint",
+  "description": "A limited Chainling free-mint campaign edition for Robinhood Chain explorers. One claim per wallet; maximum supply 8,888.",
+  "image": "https://chainling.xyz/nft/6.svg",
+  "attributes": [
+    { "trait_type": "Design", "value": "Aqua Kingfisher" },
+    { "trait_type": "Campaign", "value": "Free Mint" },
+    { "trait_type": "Edition Cap", "value": 8888 },
+    { "trait_type": "Wallet Limit", "value": 1 }
+  ]
+}
