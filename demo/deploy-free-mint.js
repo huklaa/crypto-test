@@ -11,6 +11,7 @@ const deployData=encodeDeployData({abi:artifact.abi,bytecode:artifact.bytecode,a
 const button=document.querySelector("#deploy");
 const mobileButton=document.querySelector("#deploy-mobile");
 const status=document.querySelector("#status");
+let mobileProvider=null;
 
 function message(value){status.textContent=value}
 function linkResult(label,url){status.textContent="";const link=document.createElement("a");link.href=url;link.target="_blank";link.rel="noopener noreferrer";link.textContent=label;status.append(link)}
@@ -34,12 +35,13 @@ async function waitForReceipt(provider,hash){
 
 function setBusy(value){button.disabled=value;mobileButton.disabled=value}
 
-async function deploy(provider){
+async function deploy(provider,connectedAccount){
   if(!provider?.request){message("Wallet provider was not available.");return}
   setBusy(true);
   try{
     message("Connecting owner wallet…");
-    const accounts=await provider.request({method:"eth_requestAccounts"});
+    let accounts=connectedAccount?[connectedAccount]:await provider.request({method:"eth_accounts"});
+    if(!accounts?.length)accounts=await provider.request({method:"eth_requestAccounts"});
     const account=accounts?.[0];
     if(!account)throw new Error("Wallet connection was not completed.");
     if(account.toLowerCase()!==OWNER.toLowerCase())throw new Error(`Wrong wallet. Connect the owner wallet ${OWNER}.`);
@@ -66,6 +68,11 @@ button.addEventListener("click",async()=>{
 });
 
 mobileButton.addEventListener("click",async()=>{
+  if(mobileProvider){
+    const accounts=mobileProvider.accounts?.length?mobileProvider.accounts:await mobileProvider.request({method:"eth_accounts"});
+    await deploy(mobileProvider,accounts?.[0]);
+    return;
+  }
   setBusy(true);
   try{
     if(!PROJECT_ID)throw new Error("WalletConnect configuration is missing.");
@@ -74,6 +81,13 @@ mobileButton.addEventListener("click",async()=>{
     const EthereumProvider=module.default;
     const provider=await EthereumProvider.init({projectId:PROJECT_ID,chains:[4663],optionalChains:[4663],showQrModal:true,rpcMap:{4663:RPC_URL},metadata:{name:"Chainling",description:"Chainling Aqua Kingfisher contract deployment",url:location.origin,icons:[]}});
     await provider.connect();
-    await deploy(provider);
+    const accounts=provider.accounts?.length?provider.accounts:await provider.request({method:"eth_accounts"});
+    const account=accounts?.[0];
+    if(!account)throw new Error("Wallet connected but no account was shared.");
+    if(account.toLowerCase()!==OWNER.toLowerCase())throw new Error(`Wrong wallet. Connect the owner wallet ${OWNER}.`);
+    mobileProvider=provider;
+    mobileButton.textContent="Send deployment request to phone";
+    message("Mobile wallet connected. Click the button again to send the deployment request to MetaMask.");
+    setBusy(false);
   }catch(error){message(error?.message||"WalletConnect connection was cancelled or failed.");setBusy(false)}
 });
