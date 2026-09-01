@@ -19,7 +19,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check src/base.js && node --check src/base-attribution.js && node --check src/base-fees.js && node --check src/base-flashblocks.js && node --check examples/base-portfolio.js && node --check examples/base-erc20-allowance-audit.js && node --check examples/base-nft-operator-audit.js && node --check demo/app.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/lib/priceClient.js && node --check demo/lib/snapshotRegistry.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
+    "lint": "node --check crypto.js && node --check src/index.js && node --check src/validation.js && node --check src/formatting.js && node --check src/market.js && node --check src/portfolio.js && node --check src/trading.js && node --check src/staking.js && node --check src/base.js && node --check src/base-attribution.js && node --check src/base-fees.js && node --check src/base-flashblocks.js && node --check examples/base-portfolio.js && node --check examples/base-erc20-allowance-audit.js && node --check examples/base-nft-operator-audit.js && node --check demo/app.js && node --check demo/free-mint.js && node --check demo/deploy-free-mint.js && node --check demo/lib/baseClient.js && node --check demo/lib/baseConfig.js && node --check demo/lib/portfolioAnalytics.js && node --check demo/lib/priceClient.js && node --check demo/lib/snapshotRegistry.js && node --check demo/rpc-smoke.js && node --check vite.config.js",
     "example:base": "node examples/base-portfolio.js",
     "example:base:erc20-allowance": "node examples/base-erc20-allowance-audit.js",
     "example:base:nft-approval": "node examples/base-nft-operator-audit.js",
@@ -30,6 +30,7 @@
     "contract:build": "hardhat build",
     "contract:test": "hardhat test nodejs",
     "contract:deploy:base-sepolia": "hardhat ignition deploy ignition/modules/PortfolioSnapshotRegistry.ts --network baseSepolia --build-profile production",
+    "contract:deploy:robinhood:free-mint": "hardhat ignition deploy ignition/modules/ChainlingAquaFreeMint.ts --network robinhood --build-profile production",
     "contract:verify:base-sepolia": "hardhat verify --network baseSepolia --provider blockscout",
     "test:import": "node --input-type=module --eval \"import('@huklaa/crypto-utils').then((api) => { if (typeof api.calculateMarketCap !== 'function') throw new Error('Public API smoke test failed'); })\"",
     "check": "npm run lint && npm test && npm run contract:test && npm run test:import",

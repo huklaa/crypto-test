@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Chainling Free Mint Deployment</title>
+    <style>
+      :root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color-scheme:dark;color:#eff9f6;background:#020707}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 50% 10%,#0a4540,#020707 42rem)}main{width:min(680px,100%);padding:clamp(24px,5vw,46px);border:1px solid #2df5d166;border-radius:24px;background:linear-gradient(145deg,#071b19,#020807);box-shadow:0 28px 90px #000b,0 0 45px #2df5d119}.kicker{color:#2df5d1;font-size:.78rem;font-weight:900;letter-spacing:.16em}h1{font-size:clamp(2.2rem,7vw,4.4rem);line-height:.95;margin:10px 0 20px}p{color:#a9bbb6;line-height:1.65}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}.facts div{padding:14px;border:1px solid #21443e;border-radius:12px;background:#04100e}.facts span{display:block;color:#82958f;font-size:.75rem}.facts strong{display:block;margin-top:6px}.warning{padding:14px;border:1px solid #5b4c1f;border-radius:12px;background:#211b08;color:#e8dcaa}button{width:100%;padding:16px;border:0;border-radius:13px;background:linear-gradient(90deg,#20d8c8,#5eeeff);color:#03100f;font:inherit;font-weight:950;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}#status{min-height:48px;margin:15px 0 0;font-size:.9rem}a{color:#2df5d1}@media(max-width:600px){.facts{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">OWNER-ONLY DEPLOYMENT</p>
+      <h1>Aqua Kingfisher<br>Free Mint</h1>
+      <p>Deploy the tested Chainling #6 free-mint contract to Robinhood Chain. The connected wallet must be the campaign owner.</p>
+      <div class="facts"><div><span>Supply</span><strong>8,888</strong></div><div><span>Wallet limit</span><strong>1 NFT</strong></div><div><span>Price</span><strong>FREE</strong></div></div>
+      <p class="warning">This creates a new smart contract and spends a small amount of ETH for network gas. Review the wallet confirmation before approving.</p>
+      <button id="deploy" type="button">Connect owner wallet & deploy</button>
+      <p id="status" aria-live="polite">Waiting for owner wallet.</p>
+    </main>
+    <script type="module" src="/deploy-free-mint.js"></script>
+  </body>
+</html>
