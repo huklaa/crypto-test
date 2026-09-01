@@ -17,7 +17,7 @@ function message(value){status.textContent=value}
 function linkResult(label,url){status.textContent="";const link=document.createElement("a");link.href=url;link.target="_blank";link.rel="noopener noreferrer";link.textContent=label;status.append(link)}
 async function ensureNetwork(provider){
   const current=await provider.request({method:"eth_chainId"});
-  if(current?.toLowerCase()===CHAIN_ID)return;
+  if(Number(current)===4663)return;
   try{await provider.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID}]})}
   catch(error){
     if(error?.code!==4902)throw error;
