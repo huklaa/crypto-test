@@ -6,8 +6,10 @@ const TOKEN_URI="https://chainling.xyz/free-mint/6.json";
 const CHAIN_ID="0x1237";
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
 const EXPLORER="https://robinhoodchain.blockscout.com";
+const PROJECT_ID=window.CHAINLING_WALLETCONNECT_PROJECT_ID;
 const deployData=encodeDeployData({abi:artifact.abi,bytecode:artifact.bytecode,args:[OWNER,TOKEN_URI]});
 const button=document.querySelector("#deploy");
+const mobileButton=document.querySelector("#deploy-mobile");
 const status=document.querySelector("#status");
 
 function message(value){status.textContent=value}
@@ -30,10 +32,11 @@ async function waitForReceipt(provider,hash){
   throw new Error("Deployment is still pending. Check the transaction in Blockscout.");
 }
 
-button.addEventListener("click",async()=>{
-  const provider=window.ethereum;
-  if(!provider?.request){message("Open this page inside the owner wallet browser or use a browser with an EVM wallet extension.");return}
-  button.disabled=true;
+function setBusy(value){button.disabled=value;mobileButton.disabled=value}
+
+async function deploy(provider){
+  if(!provider?.request){message("Wallet provider was not available.");return}
+  setBusy(true);
   try{
     message("Connecting owner wallet…");
     const accounts=await provider.request({method:"eth_requestAccounts"});
@@ -50,7 +53,27 @@ button.addEventListener("click",async()=>{
     status.textContent=`Contract deployed: ${receipt.contractAddress} `;
     const link=document.createElement("a");link.href=`${EXPLORER}/address/${receipt.contractAddress}`;link.target="_blank";link.rel="noopener noreferrer";link.textContent="View contract";status.append(link);
     button.textContent="Deployment complete";
+    mobileButton.textContent="Deployment complete";
     return;
   }catch(error){message(error?.message||"Deployment failed or was cancelled.")}
-  button.disabled=false;
+  setBusy(false);
+}
+
+button.addEventListener("click",async()=>{
+  const provider=window.ethereum;
+  if(!provider?.request){message("Browser MetaMask was not found. Use the QR button for MetaMask Mobile.");return}
+  await deploy(provider);
+});
+
+mobileButton.addEventListener("click",async()=>{
+  setBusy(true);
+  try{
+    if(!PROJECT_ID)throw new Error("WalletConnect configuration is missing.");
+    message("Opening WalletConnect QR code… Scan it in MetaMask Mobile.");
+    const module=await import(/* @vite-ignore */"https://esm.sh/@walletconnect/ethereum-provider@2.21.1");
+    const EthereumProvider=module.default;
+    const provider=await EthereumProvider.init({projectId:PROJECT_ID,chains:[4663],optionalChains:[4663],showQrModal:true,rpcMap:{4663:RPC_URL},metadata:{name:"Chainling",description:"Chainling Aqua Kingfisher contract deployment",url:location.origin,icons:[]}});
+    await provider.connect();
+    await deploy(provider);
+  }catch(error){message(error?.message||"WalletConnect connection was cancelled or failed.");setBusy(false)}
 });
