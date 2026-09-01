@@ -1,7 +1,7 @@
 import {createPublicClient,createWalletClient,custom,defineChain,http,parseAbi} from "viem";
 
 const PROFILE_URL="https://x.com/chainling_xyz";
-const FREE_MINT_CONTRACT="";
+const FREE_MINT_CONTRACT="0xf635760F649A550285e6206216772e71678615DE";
 const CHAIN_ID_HEX="0x1237";
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
 const EXPLORER="https://robinhoodchain.blockscout.com";
@@ -32,7 +32,7 @@ export function initFreeMintCampaign(){
         <label class="free-mint-task"><input type="checkbox" data-free-task><span><strong>Repost the campaign post</strong><small>Share the pinned announcement with your community.</small></span><a href="${PROFILE_URL}" target="_blank" rel="noopener noreferrer">Repost</a></label>
       </div>
       <button class="free-mint-claim" type="button" disabled>Complete the X tasks</button>
-      <p class="free-mint-status" aria-live="polite">Task completion is self-confirmed and is not automatically verified by X. Contract deployment is pending.</p>
+      <p class="free-mint-status" aria-live="polite">Task completion is self-confirmed and is not automatically verified by X. The free-mint contract is live on Robinhood Chain.</p>
     </div>`;
   collection.insertAdjacentElement("afterend",section);
 
@@ -81,14 +81,24 @@ export function initFreeMintCampaign(){
   claimButton.addEventListener("click",async()=>{
     if(!tasksDone()||!isConfigured()||busy)return;
     const provider=window.ethereum;
-    if(!provider?.request){status.textContent="Open Chainling in an EVM wallet browser or install a compatible wallet.";return}
+    if(!provider?.request){
+      status.textContent="Connect a wallet, then click the claim button again.";
+      document.querySelector(".wallet-btn[data-connect]")?.click();
+      return;
+    }
     busy=true;update();
     try{
       const accounts=await provider.request({method:"eth_requestAccounts"});
       const account=accounts?.[0];
       if(!account)throw new Error("Wallet connection was not completed.");
       const current=await provider.request({method:"eth_chainId"});
-      if(current.toLowerCase()!==CHAIN_ID_HEX)await provider.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID_HEX}]});
+      if(Number(current)!==4663){
+        try{await provider.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID_HEX}]})}
+        catch(error){
+          if(error?.code!==4902)throw error;
+          await provider.request({method:"wallet_addEthereumChain",params:[{chainId:CHAIN_ID_HEX,chainName:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:[RPC_URL],blockExplorerUrls:[EXPLORER]}]});
+        }
+      }
       if(await publicClient.readContract({address:FREE_MINT_CONTRACT,abi:freeMintAbi,functionName:"claimed",args:[account]}))throw new Error("This wallet has already claimed its free NFT.");
       const walletClient=createWalletClient({account,chain,transport:custom(provider)});
       const hash=await walletClient.writeContract({address:FREE_MINT_CONTRACT,abi:freeMintAbi,functionName:"mint"});
