@@ -3,7 +3,7 @@ import {createPublicClient,createWalletClient,custom,defineChain,getAddress,http
 const PROFILE_URL="https://x.com/chainling_xyz";
 const CAMPAIGN_TWEET_ID=window.CHAINLING_CAMPAIGN_TWEET_ID||"";
 const CAMPAIGN_URL=/^\d{1,19}$/.test(CAMPAIGN_TWEET_ID)?`${PROFILE_URL}/status/${CAMPAIGN_TWEET_ID}`:PROFILE_URL;
-const AUTH_API=window.CHAINLING_AUTH_API||"https://auth.chainling.xyz";
+const AUTH_API=window.CHAINLING_AUTH_API||"https://chainling-x-verifier.ertekh.chatgpt.site";
 const VERIFIED_MINT_CONTRACT="";
 const CHAIN_ID_HEX="0x1237";
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
