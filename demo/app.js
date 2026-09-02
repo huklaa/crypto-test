@@ -105,6 +105,7 @@ document.addEventListener("keydown",event=>{if(event.key==="Escape")closeAccount
 mintButton?.addEventListener("click",mintSelected);
 document.querySelectorAll(".nft-card").forEach(card=>card.addEventListener("click",async()=>{document.querySelectorAll(".nft-card").forEach(item=>item.classList.remove("active"));card.classList.add("active");selectedDesign=Number(card.dataset.design);if(selectedName)selectedName.textContent=card.dataset.name;if(selectedSupply)selectedSupply.textContent=card.dataset.supply;renderSelectedPrice();syncHero();showMessage(account?`Design #${selectedDesign} selected. Ready to mint.`:"Connect your wallet to prepare minting.");await refreshMinted()}));
 const initial=choosePreferredInjected();if(initial){activeProvider=initial.provider;activeProviderInfo=initial.info;bindProviderEvents(initial.provider)}
+window.chainlingGetWalletProvider=()=>activeProvider||choosePreferredInjected()?.provider||null;
 renderCardPrices();renderSelectedPrice();syncHero();updateWalletUi();refreshMinted();
 restoreWalletSession();
 initFreeMintCampaign();
