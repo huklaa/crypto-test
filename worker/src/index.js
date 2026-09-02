@@ -1,18 +1,9 @@
-import {
-  encodeAbiParameters,
-  getAddress,
-  isAddress,
-  keccak256,
-  recoverMessageAddress,
-} from "viem";
+import { encodeAbiParameters, getAddress, isAddress, keccak256, stringToHex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { pkceChallenge, randomToken, seal, unseal } from "./crypto.js";
 
 const X_API = "https://api.x.com/2";
-const AUTH_COOKIE = "chainling_x_auth";
-const FLOW_COOKIE = "chainling_x_flow";
-const COOKIE_OPTIONS = "Path=/; HttpOnly; Secure; SameSite=Lax";
 const AUTH_TTL_SECONDS = 60 * 60;
 const FLOW_TTL_SECONDS = 10 * 60;
 const PERMIT_TTL_SECONDS = 15 * 60;
@@ -24,30 +15,12 @@ function json(payload, status = 200, headers = {}) {
   });
 }
 
-function cookieValue(request, name) {
-  const header = request.headers.get("cookie") || "";
-  for (const part of header.split(";")) {
-    const [key, ...value] = part.trim().split("=");
-    if (key === name) return value.join("=");
-  }
-  return null;
-}
-
-function setCookie(name, value, maxAge) {
-  return `${name}=${value}; ${COOKIE_OPTIONS}; Max-Age=${maxAge}`;
-}
-
-function clearCookie(name) {
-  return `${name}=; ${COOKIE_OPTIONS}; Max-Age=0`;
-}
-
 function corsHeaders(request, env) {
   const origin = request.headers.get("origin");
   if (origin !== env.SITE_ORIGIN) return {};
   return {
     "access-control-allow-origin": origin,
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers": "content-type",
+    "access-control-allow-headers": "authorization,content-type",
     "access-control-allow-methods": "GET,POST,OPTIONS",
     vary: "Origin",
   };
@@ -62,17 +35,9 @@ function assertConfiguration(env) {
   for (const key of required) if (!env[key]) throw new Error(`${key} is not configured.`);
 }
 
-function verificationMessage(wallet, nonce) {
-  return [
-    "Chainling free mint verification",
-    `Wallet: ${getAddress(wallet)}`,
-    `Nonce: ${nonce}`,
-    "This signature does not authorize a blockchain transaction.",
-  ].join("\n");
-}
-
-async function readSession(request, env, cookieName) {
-  const token = cookieValue(request, cookieName);
+async function readSession(request, env) {
+  const authorization = request.headers.get("authorization") || "";
+  const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : null;
   if (!token) return null;
   try {
     const session = await unseal(token, env.SESSION_SECRET);
@@ -84,9 +49,7 @@ async function readSession(request, env, cookieName) {
 }
 
 async function xRequest(path, accessToken) {
-  const response = await fetch(`${X_API}${path}`, {
-    headers: { authorization: `Bearer ${accessToken}` },
-  });
+  const response = await fetch(`${X_API}${path}`, { headers: { authorization: `Bearer ${accessToken}` } });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error(payload?.detail || payload?.title || `X API request failed (${response.status}).`);
@@ -133,85 +96,65 @@ async function verifyTasks(session, env) {
   return { followed, liked, reposted };
 }
 
-async function bindVerifiedIdentity(session, env) {
-  const wallet = getAddress(session.wallet).toLowerCase();
-  await env.DB.prepare(
-    "INSERT OR IGNORE INTO verified_claims (x_user_id, x_username, wallet, verified_at) VALUES (?, ?, ?, ?)",
-  ).bind(session.xUserId, session.xUsername, wallet, Date.now()).run();
-
-  const byX = await env.DB.prepare("SELECT wallet FROM verified_claims WHERE x_user_id = ?")
-    .bind(session.xUserId).first();
-  if (byX?.wallet !== wallet) throw new Response("This X account is already linked to another wallet.", { status: 409 });
-  const byWallet = await env.DB.prepare("SELECT x_user_id FROM verified_claims WHERE wallet = ?")
-    .bind(wallet).first();
-  if (byWallet?.x_user_id !== session.xUserId) throw new Response("This wallet is already linked to another X account.", { status: 409 });
-}
-
 async function issuePermit(session, env) {
   if (!isAddress(env.MINT_CONTRACT_ADDRESS || "")) throw new Error("MINT_CONTRACT_ADDRESS is not configured.");
   if (!/^0x[0-9a-fA-F]{64}$/.test(env.MINT_SIGNER_PRIVATE_KEY || "")) throw new Error("MINT_SIGNER_PRIVATE_KEY is not configured.");
   const wallet = getAddress(session.wallet);
+  const xUserHash = keccak256(stringToHex(`chainling:x:${session.xUserId}`));
   const deadline = BigInt(Math.floor(Date.now() / 1000) + PERMIT_TTL_SECONDS);
   const permitHash = keccak256(encodeAbiParameters(
-    [{ type: "address" }, { type: "uint256" }, { type: "address" }, { type: "uint256" }],
-    [getAddress(env.MINT_CONTRACT_ADDRESS), BigInt(env.CHAIN_ID), wallet, deadline],
+    [{ type: "address" }, { type: "uint256" }, { type: "address" }, { type: "bytes32" }, { type: "uint256" }],
+    [getAddress(env.MINT_CONTRACT_ADDRESS), BigInt(env.CHAIN_ID), wallet, xUserHash, deadline],
   ));
   const signer = privateKeyToAccount(env.MINT_SIGNER_PRIVATE_KEY);
   const signature = await signer.signMessage({ message: { raw: permitHash } });
-  return { contract: getAddress(env.MINT_CONTRACT_ADDRESS), deadline: deadline.toString(), signature };
+  return { contract: getAddress(env.MINT_CONTRACT_ADDRESS), xUserHash, deadline: deadline.toString(), signature };
 }
 
 async function startAuth(request, env) {
   assertSiteOrigin(request, env);
   assertConfiguration(env);
   const body = await request.json();
-  if (!isAddress(body.wallet || "") || !/^[A-Za-z0-9_-]{24,128}$/.test(body.nonce || "") || !/^0x[0-9a-fA-F]{130}$/.test(body.signature || "")) {
-    return json({ error: "Invalid wallet verification request." }, 400, corsHeaders(request, env));
-  }
-  const wallet = getAddress(body.wallet);
-  const message = verificationMessage(wallet, body.nonce);
-  const recovered = await recoverMessageAddress({ message, signature: body.signature });
-  if (getAddress(recovered) !== wallet) return json({ error: "Wallet signature does not match." }, 401, corsHeaders(request, env));
+  if (!isAddress(body.wallet || "")) return json({ error: "Invalid wallet address." }, 400, corsHeaders(request, env));
 
-  const state = randomToken();
   const verifier = randomToken(48);
   const challenge = await pkceChallenge(verifier);
-  const flow = await seal({ state, verifier, wallet, expiresAt: Date.now() + FLOW_TTL_SECONDS * 1000 }, env.SESSION_SECRET);
+  const callbackUrl = new URL("/auth/callback", request.url).toString();
+  const state = await seal({
+    verifier,
+    wallet: getAddress(body.wallet),
+    callbackUrl,
+    expiresAt: Date.now() + FLOW_TTL_SECONDS * 1000,
+  }, env.SESSION_SECRET);
   const params = new URLSearchParams({
     response_type: "code",
     client_id: env.X_CLIENT_ID,
-    redirect_uri: env.X_CALLBACK_URL,
+    redirect_uri: callbackUrl,
     scope: "tweet.read users.read follows.read like.read",
     state,
     code_challenge: challenge,
     code_challenge_method: "S256",
   });
-  return json(
-    { authorizationUrl: `https://x.com/i/oauth2/authorize?${params}` },
-    200,
-    { ...corsHeaders(request, env), "set-cookie": setCookie(FLOW_COOKIE, flow, FLOW_TTL_SECONDS) },
-  );
+  return json({ authorizationUrl: `https://x.com/i/oauth2/authorize?${params}` }, 200, corsHeaders(request, env));
 }
 
 async function authCallback(request, env) {
   assertConfiguration(env);
   const url = new URL(request.url);
-  const flow = await readSession(request, env, FLOW_COOKIE);
-  if (!flow || url.searchParams.get("state") !== flow.state || !url.searchParams.get("code")) {
+  let flow = null;
+  try { flow = await unseal(url.searchParams.get("state"), env.SESSION_SECRET); } catch {}
+  if (!flow?.expiresAt || flow.expiresAt < Date.now() || !url.searchParams.get("code")) {
     return Response.redirect(`${env.SITE_ORIGIN}/?x=failed#free-mint`, 302);
   }
 
   const credentials = btoa(`${env.X_CLIENT_ID}:${env.X_CLIENT_SECRET}`);
   const tokenResponse = await fetch("https://api.x.com/2/oauth2/token", {
     method: "POST",
-    headers: {
-      authorization: `Basic ${credentials}`,
-      "content-type": "application/x-www-form-urlencoded",
-    },
+    headers: { authorization: `Basic ${credentials}`, "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       code: url.searchParams.get("code"),
       grant_type: "authorization_code",
-      redirect_uri: env.X_CALLBACK_URL,
+      redirect_uri: flow.callbackUrl,
       code_verifier: flow.verifier,
     }),
   });
@@ -225,36 +168,27 @@ async function authCallback(request, env) {
     accessToken: token.access_token,
     expiresAt: Date.now() + Math.min(Number(token.expires_in || AUTH_TTL_SECONDS), AUTH_TTL_SECONDS) * 1000,
   }, env.SESSION_SECRET);
-  const headers = new Headers({ location: `${env.SITE_ORIGIN}/?x=connected#free-mint` });
-  headers.append("set-cookie", setCookie(AUTH_COOKIE, session, AUTH_TTL_SECONDS));
-  headers.append("set-cookie", clearCookie(FLOW_COOKIE));
-  return new Response(null, { status: 302, headers });
+  return Response.redirect(`${env.SITE_ORIGIN}/#free-mint&x_session=${encodeURIComponent(session)}`, 302);
 }
 
 async function status(request, env) {
-  const session = await readSession(request, env, AUTH_COOKIE);
-  return json(session ? {
-    connected: true,
-    username: session.xUsername,
-    wallet: session.wallet,
-  } : { connected: false }, 200, corsHeaders(request, env));
+  const session = await readSession(request, env);
+  return json(session ? { connected: true, username: session.xUsername, wallet: session.wallet } : { connected: false }, 200, corsHeaders(request, env));
 }
 
 async function verify(request, env) {
   assertSiteOrigin(request, env);
-  const session = await readSession(request, env, AUTH_COOKIE);
+  const session = await readSession(request, env);
   if (!session) return json({ error: "Connect your X account again." }, 401, corsHeaders(request, env));
   const tasks = await verifyTasks(session, env);
   if (!Object.values(tasks).every(Boolean)) return json({ verified: false, tasks }, 200, corsHeaders(request, env));
-  await bindVerifiedIdentity(session, env);
-  const permit = await issuePermit(session, env);
-  return json({ verified: true, tasks, permit }, 200, corsHeaders(request, env));
+  return json({ verified: true, tasks, permit: await issuePermit(session, env) }, 200, corsHeaders(request, env));
 }
 
 async function route(request, env) {
   const url = new URL(request.url);
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(request, env) });
-  if (request.method === "GET" && url.pathname === "/health") return json({ ok: true });
+  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/health")) return json({ ok: true, service: "Chainling X verifier" });
   if (request.method === "POST" && url.pathname === "/api/auth/start") return startAuth(request, env);
   if (request.method === "GET" && url.pathname === "/auth/callback") return authCallback(request, env);
   if (request.method === "GET" && url.pathname === "/api/status") return status(request, env);
@@ -264,14 +198,11 @@ async function route(request, env) {
 
 export default {
   async fetch(request, env) {
-    try {
-      return await route(request, env);
-    } catch (error) {
+    try { return await route(request, env); }
+    catch (error) {
       if (error instanceof Response) return error;
       console.error(error);
       return json({ error: error?.message || "Verification service error." }, 500, corsHeaders(request, env));
     }
   },
 };
-
-export { verificationMessage };

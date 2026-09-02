@@ -8,14 +8,12 @@ const VERIFIED_MINT_CONTRACT="";
 const CHAIN_ID_HEX="0x1237";
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
 const EXPLORER="https://robinhoodchain.blockscout.com";
-const verifiedMintAbi=parseAbi(["function mint(uint256 deadline,bytes signature)","function minted() view returns (uint256)","function claimed(address) view returns (bool)"]);
+const verifiedMintAbi=parseAbi(["function mint(bytes32 xUserHash,uint256 deadline,bytes signature)","function minted() view returns (uint256)","function claimed(address) view returns (bool)"]);
 const chain=defineChain({id:4663,name:"Robinhood Chain",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:{default:{http:[RPC_URL]}},blockExplorers:{default:{name:"Blockscout",url:EXPLORER}}});
 const publicClient=createPublicClient({chain,transport:http(RPC_URL)});
 
 function isConfigured(){return /^0x[a-fA-F0-9]{40}$/.test(VERIFIED_MINT_CONTRACT)&&/^https:\/\//.test(AUTH_API)}
 function short(value){return `${value.slice(0,6)}…${value.slice(-4)}`}
-function verificationMessage(wallet,nonce){return ["Chainling free mint verification",`Wallet: ${getAddress(wallet)}`,`Nonce: ${nonce}`,"This signature does not authorize a blockchain transaction."].join("\n")}
-function randomNonce(){const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);return btoa(String.fromCharCode(...bytes)).replaceAll("+","-").replaceAll("/","_").replaceAll("=","")}
 
 export function initFreeMintCampaign(){
   const collection=document.querySelector("#collection");
@@ -65,6 +63,7 @@ export function initFreeMintCampaign(){
   let session=null;
   let tasks={followed:false,liked:false,reposted:false};
   let permit=null;
+  let authToken=sessionStorage.getItem("chainling_x_session");
   let busy=false;
   let claimedSuccessfully=false;
 
@@ -87,7 +86,7 @@ export function initFreeMintCampaign(){
 
   const provider=()=>window.chainlingGetWalletProvider?.()||window.ethereum||null;
   const requestJson=async(path,options={})=>{
-    const response=await fetch(`${AUTH_API}${path}`,{credentials:"include",...options,headers:{"content-type":"application/json",...(options.headers||{})}});
+    const response=await fetch(`${AUTH_API}${path}`,{...options,headers:{"content-type":"application/json",...(authToken?{authorization:`Bearer ${authToken}`}:{}) ,...(options.headers||{})}});
     const payload=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(payload.error||`Verification request failed (${response.status}).`);
     return payload;
@@ -103,11 +102,9 @@ export function initFreeMintCampaign(){
     if(!walletProvider?.request){status.textContent="Connect a wallet, then click this button again.";document.querySelector(".wallet-btn[data-connect]")?.click();return}
     const accounts=await walletProvider.request({method:"eth_requestAccounts"});
     const account=accounts?.[0];if(!account)throw new Error("Wallet connection was not completed.");
-    const wallet=getAddress(account);const nonce=randomNonce();const message=verificationMessage(wallet,nonce);
-    status.textContent="Sign the free verification message in your wallet. This is not a transaction.";
-    const walletClient=createWalletClient({account:wallet,transport:custom(walletProvider)});
-    const signature=await walletClient.signMessage({message});
-    const result=await requestJson("/api/auth/start",{method:"POST",body:JSON.stringify({wallet,nonce,signature})});
+    const wallet=getAddress(account);
+    status.textContent="Opening secure X authorization…";
+    const result=await requestJson("/api/auth/start",{method:"POST",body:JSON.stringify({wallet})});
     location.href=result.authorizationUrl;
   };
   const verifyXTasks=async()=>{
@@ -123,7 +120,7 @@ export function initFreeMintCampaign(){
     await ensureNetwork(walletProvider);
     if(await publicClient.readContract({address:VERIFIED_MINT_CONTRACT,abi:verifiedMintAbi,functionName:"claimed",args:[account]}))throw new Error("This wallet has already claimed its free NFT.");
     const walletClient=createWalletClient({account,chain,transport:custom(walletProvider)});
-    const hash=await walletClient.writeContract({address:VERIFIED_MINT_CONTRACT,abi:verifiedMintAbi,functionName:"mint",args:[BigInt(permit.deadline),permit.signature]});
+    const hash=await walletClient.writeContract({address:VERIFIED_MINT_CONTRACT,abi:verifiedMintAbi,functionName:"mint",args:[permit.xUserHash,BigInt(permit.deadline),permit.signature]});
     status.textContent=`Mint submitted: ${short(hash)}`;
     const receipt=await publicClient.waitForTransactionReceipt({hash});if(receipt.status!=="success")throw new Error("Mint transaction reverted.");
     const total=await publicClient.readContract({address:VERIFIED_MINT_CONTRACT,abi:verifiedMintAbi,functionName:"minted"});
@@ -139,8 +136,10 @@ export function initFreeMintCampaign(){
 
   const refreshSession=async()=>{
     if(!isConfigured()){update();return}
-    try{const result=await requestJson("/api/status");session=result.connected?result:null;if(new URLSearchParams(location.search).has("x"))history.replaceState(null,"",`${location.pathname}${location.hash||"#free-mint"}`)}
-    catch{session=null}
+    const match=location.hash.match(/(?:^#|&)x_session=([^&]+)/);
+    if(match){authToken=decodeURIComponent(match[1]);sessionStorage.setItem("chainling_x_session",authToken);history.replaceState(null,"",`${location.pathname}#free-mint`)}
+    try{const result=await requestJson("/api/status");session=result.connected?result:null}
+    catch{session=null;authToken=null;sessionStorage.removeItem("chainling_x_session")}
     update();
   };
   update();refreshSession();

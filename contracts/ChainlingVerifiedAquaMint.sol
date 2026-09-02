@@ -40,6 +40,7 @@ contract ChainlingVerifiedAquaMint {
     error Reentrancy();
     error SoldOut();
     error UnsafeRecipient();
+    error XAccountClaimed();
     error ZeroAddress();
 
     string public constant name = "Chainling Aqua Kingfisher Verified Mint";
@@ -57,6 +58,7 @@ contract ChainlingVerifiedAquaMint {
     uint256 private _locked = 1;
 
     mapping(address => bool) public claimed;
+    mapping(bytes32 => bool) public claimedX;
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
@@ -100,18 +102,20 @@ contract ChainlingVerifiedAquaMint {
         for (uint256 i; i < accounts.length; ++i) values[i] = balanceOf(accounts[i], ids[i]);
     }
 
-    function mintPermitHash(address account, uint256 deadline) public view returns (bytes32) {
-        return keccak256(abi.encode(address(this), block.chainid, account, deadline));
+    function mintPermitHash(address account, bytes32 xUserHash, uint256 deadline) public view returns (bytes32) {
+        return keccak256(abi.encode(address(this), block.chainid, account, xUserHash, deadline));
     }
 
-    function mint(uint256 deadline, bytes calldata signature) external nonReentrant {
+    function mint(bytes32 xUserHash, uint256 deadline, bytes calldata signature) external nonReentrant {
         if (paused) revert MintPaused();
         if (claimed[msg.sender]) revert AlreadyClaimed();
+        if (claimedX[xUserHash]) revert XAccountClaimed();
         if (minted >= MAX_SUPPLY) revert SoldOut();
         if (block.timestamp > deadline) revert ExpiredPermit();
-        if (_recover(mintPermitHash(msg.sender, deadline), signature) != signer) revert InvalidPermit();
+        if (_recover(mintPermitHash(msg.sender, xUserHash, deadline), signature) != signer) revert InvalidPermit();
 
         claimed[msg.sender] = true;
+        claimedX[xUserHash] = true;
         minted += 1;
         _balances[msg.sender] += 1;
         emit TransferSingle(msg.sender, address(0), msg.sender, TOKEN_ID, 1);

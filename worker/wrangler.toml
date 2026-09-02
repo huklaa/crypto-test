@@ -4,16 +4,10 @@ compatibility_date = "2026-09-01"
 
 [vars]
 SITE_ORIGIN = "https://chainling.xyz"
-X_CALLBACK_URL = "https://auth.chainling.xyz/auth/callback"
 X_TARGET_USERNAME = "chainling_xyz"
 X_CAMPAIGN_TWEET_ID = "REPLACE_AFTER_POSTING"
 CHAIN_ID = "4663"
 MINT_CONTRACT_ADDRESS = "REPLACE_AFTER_DEPLOYMENT"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "chainling-x-verifier"
-database_id = "REPLACE_AFTER_D1_CREATION"
 
 # Configure these with `wrangler secret put` or the Cloudflare dashboard:
 # X_CLIENT_ID
