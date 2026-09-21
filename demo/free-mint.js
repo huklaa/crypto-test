@@ -39,8 +39,14 @@ export function initFreeMintCampaign(){
 
   const promoteCampaign=()=>{
     const landing=document.querySelector(".chainling-landing");
-    if(!landing)return false;
-    landing.insertAdjacentElement("afterend",section);
+    const paidMint=document.querySelector(".hero");
+    if(paidMint){
+      paidMint.insertAdjacentElement("beforebegin",section);
+    }else if(landing){
+      landing.insertAdjacentElement("afterend",section);
+    }else{
+      return false;
+    }
     const copy=landing.querySelector(".landing-copy");
     if(copy&&!copy.querySelector(".landing-free-callout")){
       copy.insertAdjacentHTML("afterbegin",'<a class="landing-free-callout" href="#free-mint"><span>LIMITED FREE MINT</span><strong>#6 Aqua Kingfisher · 8,888 supply · 1 per wallet</strong></a>');
