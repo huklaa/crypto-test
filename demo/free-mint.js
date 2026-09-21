@@ -1,6 +1,7 @@
 import {createPublicClient,createWalletClient,custom,defineChain,http,parseAbi} from "viem";
 
-const PROFILE_URL="https://x.com/chainling_xyz";
+const PROFILE_URL="https://x.com/NFTVoyaqeR";
+const PROFILE_HANDLE="@NFTVoyaqeR";
 const FREE_MINT_CONTRACT="0xf635760F649A550285e6206216772e71678615DE";
 const CHAIN_ID_HEX="0x1237";
 const RPC_URL="https://rpc.mainnet.chain.robinhood.com/";
@@ -27,7 +28,7 @@ export function initFreeMintCampaign(){
       <p class="free-mint-lead">Follow Chainling on X, like the pinned campaign post and repost it. Then connect your wallet to claim one free Aqua Kingfisher while supply lasts.</p>
       <div class="free-mint-stats"><div><span>Supply</span><strong>8,888</strong></div><div><span>Price</span><strong>FREE</strong></div><div><span>Wallet limit</span><strong>1 NFT</strong></div></div>
       <div class="free-mint-tasks" aria-label="X campaign tasks">
-        <label class="free-mint-task"><input type="checkbox" data-free-task><span><strong>Follow @chainling_xyz</strong><small>Open the official Chainling profile.</small></span><a href="${PROFILE_URL}" target="_blank" rel="noopener noreferrer">Open X</a></label>
+        <label class="free-mint-task"><input type="checkbox" data-free-task><span><strong>Follow ${PROFILE_HANDLE}</strong><small>Open the official Chainling profile.</small></span><a href="${PROFILE_URL}" target="_blank" rel="noopener noreferrer">Open X</a></label>
         <label class="free-mint-task"><input type="checkbox" data-free-task><span><strong>Like the campaign post</strong><small>Like the pinned free-mint announcement.</small></span><a href="${PROFILE_URL}" target="_blank" rel="noopener noreferrer">View post</a></label>
         <label class="free-mint-task"><input type="checkbox" data-free-task><span><strong>Repost the campaign post</strong><small>Share the pinned announcement with your community.</small></span><a href="${PROFILE_URL}" target="_blank" rel="noopener noreferrer">Repost</a></label>
       </div>
