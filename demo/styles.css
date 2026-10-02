@@ -5,3 +5,244 @@
 
 /* Connected wallet account menu */
 .wallet-control{position:relative}.wallet-account-menu{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:210px;padding:7px;border:1px solid #285044;border-radius:12px;background:#07100f;box-shadow:0 18px 45px #000b}.wallet-account-menu[hidden]{display:none}.wallet-account-menu button{display:block;width:100%;padding:11px 12px;border:0;border-radius:8px;background:transparent;color:#e8f1ee;text-align:left;cursor:pointer}.wallet-account-menu button:hover,.wallet-account-menu button:focus{background:#142a23;color:var(--green);outline:none}.wallet-account-menu button[data-wallet-disconnect]{color:#ff8f8f}@media(max-width:760px){.wallet-control{margin-left:auto}.wallet-account-menu{width:190px}}
+
+
+/* Base Portfolio-inspired Chainling UI polish */
+:root{
+  --surface:#07110f;
+  --surface-2:#0a1512;
+  --surface-3:#0d1b17;
+  --border:#1c342e;
+  --border-strong:#2a4a41;
+  --green:#78ff22;
+  --green-soft:#b6ff8a;
+  --text:#f5f8f7;
+  --muted:#98aaa4;
+  --muted-2:#74857f;
+  --radius-lg:18px;
+  --radius-md:14px;
+  --shadow-soft:0 16px 42px rgba(0,0,0,.28);
+}
+html{scroll-padding-top:88px;overflow-x:hidden}
+body{
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 70% -10%,rgba(120,255,34,.065),transparent 28rem),
+    linear-gradient(180deg,#020706 0%,#010403 100%);
+}
+.shell{width:min(1380px,calc(100% - 32px))}
+.panel{
+  background:linear-gradient(180deg,rgba(8,18,15,.96),rgba(4,10,8,.98));
+  border-color:var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-soft);
+}
+.nav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  min-height:72px;
+  height:auto;
+  padding:12px 0;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  background:rgba(2,7,6,.82);
+  border-bottom-color:rgba(42,74,65,.72);
+}
+.brand{gap:10px}
+.nav-links{gap:24px;font-size:.94rem}
+.nav-links a{color:#b7c5c0;transition:color .16s ease}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--text)}
+.wallet-btn,.mint-action{
+  min-height:46px;
+  border-radius:12px;
+  box-shadow:none;
+  transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+}
+.wallet-btn:hover,.mint-action:hover{transform:translateY(-1px);filter:brightness(1.04);box-shadow:0 8px 24px rgba(120,255,34,.12)}
+.wallet-btn:active,.mint-action:active{transform:translateY(0) scale(.99)}
+.wallet-btn:focus-visible,.mint-action:focus-visible,.nft-card:focus-visible,.nav a:focus-visible,.footer a:focus-visible{
+  outline:2px solid var(--green);
+  outline-offset:3px;
+}
+.hero{
+  grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr) minmax(300px,.7fr);
+  min-height:520px;
+  margin-top:20px;
+}
+.hero-copy{padding:48px 28px 40px 46px}
+.hero h1{
+  max-width:720px;
+  font-size:clamp(2.9rem,5vw,5.25rem);
+  letter-spacing:-.04em;
+  line-height:.96;
+  margin:8px 0 20px;
+}
+.kicker{font-size:.76rem;letter-spacing:.17em}
+.tagline{font-size:1.08rem;margin-bottom:10px}
+.intro{color:#b8c6c1;max-width:610px}
+.benefits{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px 18px;
+  max-width:620px;
+  margin-top:28px;
+}
+.benefits div{
+  align-items:center;
+  min-width:0;
+  padding:11px 0;
+}
+.benefits b{
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  border-color:#37634f;
+  background:#07130f;
+}
+.hero-art{
+  min-height:520px;
+  background:radial-gradient(circle at 50% 36%,rgba(120,255,34,.11),transparent 55%);
+}
+.hero-card{
+  width:270px;
+  height:405px;
+  border-radius:16px;
+  box-shadow:0 16px 42px rgba(0,0,0,.36),0 0 26px rgba(120,255,34,.12);
+}
+.platform{
+  width:350px;
+  height:68px;
+  border-color:#4e8d3b;
+  box-shadow:0 0 24px rgba(120,255,34,.16),inset 0 0 18px rgba(120,255,34,.08);
+}
+.mint-box{
+  margin:20px;
+  padding:26px 24px;
+  border-color:var(--border-strong);
+  border-radius:16px;
+  background:linear-gradient(180deg,#091510,#06100d);
+  box-shadow:none;
+}
+.mint-box h2{margin-bottom:18px;font-size:1.35rem}
+.price-box,.network-row,.selected-row,.wallet-row{padding:14px 0;border-bottom-color:#17312a}
+.price-box strong{font-size:2.05rem}
+.mint-note{color:#8da099}
+.collection{margin-top:18px;padding:30px}
+.section-heading{gap:20px}
+.section-heading h2{font-size:clamp(1.85rem,3vw,2.45rem);letter-spacing:-.025em}
+.cards{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.nft-card{
+  border-color:var(--border);
+  border-radius:14px;
+  padding:8px 8px 13px;
+  background:#040a08;
+  box-shadow:none;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease;
+  touch-action:manipulation;
+}
+.nft-card:hover,.nft-card.active{
+  transform:translateY(-2px);
+  border-color:#4f8f3c;
+  box-shadow:none;
+  background:#07110e;
+}
+.nft-card.active{border-color:#6fcf46}
+.nft-card b{margin-top:10px}
+.nft-card>span{display:block;margin-top:3px;line-height:1.35;color:#8fa19b}
+.art{
+  height:220px!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+.about-grid{gap:14px;margin-top:18px}
+.about-grid article{
+  padding:25px;
+  border-radius:16px;
+  box-shadow:none;
+}
+.about-grid h3{font-size:1.02rem;letter-spacing:-.01em}
+.about-grid p{color:#a8b6b1;line-height:1.72}
+#blog,#roadmap,#contact{box-shadow:none!important}
+#blog article,#roadmap article{max-width:980px}
+#blog p,#roadmap p,#roadmap li,#contact p{color:#a8b6b1!important}
+#roadmap article.panel{
+  background:#07110f!important;
+  border-color:var(--border)!important;
+  box-shadow:none!important;
+}
+.footer{
+  margin-top:18px;
+  border-radius:16px;
+  box-shadow:none;
+}
+.footer-links{gap:18px}
+.wallet-account-menu{
+  border-color:var(--border-strong);
+  background:#07110f;
+  box-shadow:0 18px 44px rgba(0,0,0,.45);
+}
+.wallet-account-menu button{min-height:44px}
+@media(hover:none){
+  .nft-card:hover,.wallet-btn:hover,.mint-action:hover{transform:none}
+  .nft-card:active{transform:scale(.985)}
+}
+@media(max-width:1180px){
+  .hero{grid-template-columns:minmax(0,1fr) minmax(320px,.9fr)}
+  .mint-box{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:26px}
+  .mint-box h2,.price-box,.mint-action,.mint-note{grid-column:1/-1}
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .shell{width:min(100% - 20px,1380px)}
+  .nav{min-height:66px;padding:10px 0;gap:12px}
+  .brand{font-size:.98rem}
+  .wallet-btn{min-height:42px;padding:9px 13px}
+  .hero{grid-template-columns:1fr;margin-top:12px;min-height:0}
+  .hero-copy{padding:30px 22px 18px}
+  .hero h1{font-size:clamp(2.55rem,12vw,4rem);line-height:.98}
+  .hero-art{min-height:380px}
+  .hero-card{width:225px;height:338px}
+  .platform{width:285px}
+  .benefits{grid-template-columns:1fr 1fr;gap:6px 14px}
+  .mint-box{display:block;margin:10px;padding:22px 18px}
+  .collection{padding:22px 14px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .art{height:205px!important}
+  .section-heading{align-items:flex-start}
+  .about-grid{grid-template-columns:1fr;gap:12px}
+  .about-grid article{padding:21px}
+  #blog,#roadmap,#contact{padding:22px!important}
+  #roadmap article.panel{padding:18px!important}
+  .footer{padding:18px;gap:14px}
+  .footer-links{gap:14px}
+}
+@media(max-width:430px){
+  .shell{width:calc(100% - 14px)}
+  .nav{gap:8px}
+  .brand{min-width:0}
+  .brand span:nth-child(2){max-width:92px;overflow:hidden;text-overflow:ellipsis}
+  .wallet-btn{font-size:.86rem;padding:8px 10px}
+  .hero-copy{padding:26px 18px 14px}
+  .hero h1{font-size:clamp(2.35rem,13vw,3.45rem)}
+  .intro{font-size:.93rem}
+  .benefits{grid-template-columns:1fr}
+  .hero-art{min-height:340px}
+  .hero-card{width:210px;height:315px}
+  .platform{width:250px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .art{height:185px!important}
+  .nft-card{padding:6px 6px 11px}
+  .nft-card>span{font-size:.72rem}
+  .section-heading h2{font-size:1.7rem}
+  .price-box strong{font-size:1.85rem}
+  .network-row,.selected-row,.wallet-row{gap:10px}
+  .network-row strong,.selected-row strong,.wallet-row strong{font-size:.88rem;text-align:right}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
