@@ -8,3 +8,60 @@
 .free-mint-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.free-mint-stats div{border:1px solid #21443e;border-radius:12px;padding:14px;background:#04100e}.free-mint-stats span,.free-mint-task small{display:block;color:#849a94;font-size:.78rem}.free-mint-stats strong{display:block;margin-top:5px;color:#f2faf7}
 .free-mint-tasks{display:grid;gap:10px;margin:20px 0}.free-mint-task{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;border:1px solid #21443e;border-radius:13px;padding:13px 14px;background:#04100e}.free-mint-task input{width:18px;height:18px;accent-color:#2df5d1}.free-mint-task a{color:#2df5d1;font-weight:800}.free-mint-claim{width:100%;border:0;border-radius:12px;padding:15px 18px;background:linear-gradient(90deg,#21cfc1,#55efff);color:#03100f;font:inherit;font-weight:900;cursor:pointer}.free-mint-claim:disabled{opacity:.42;cursor:not-allowed}.free-mint-status{color:#8ca39d;font-size:.82rem;line-height:1.55;margin:12px 0 0}
 @media(max-width:760px){.free-mint-campaign{grid-template-columns:1fr}.free-mint-art{width:min(320px,100%);margin:auto}.free-mint-stats{grid-template-columns:1fr}.free-mint-task{grid-template-columns:auto 1fr}.free-mint-task a{grid-column:2}}
+
+
+/* Base Portfolio-inspired Free Mint polish */
+.nav-free-mint{color:#41e6cf!important;text-shadow:none}
+.free-mint-campaign{
+  gap:clamp(24px,4vw,52px);
+  border-color:#245048;
+  background:linear-gradient(145deg,#071512,#04100e 72%);
+  box-shadow:0 16px 42px rgba(0,0,0,.28);
+}
+.free-mint-art{
+  border-color:#2d8379;
+  border-radius:16px;
+  box-shadow:none;
+}
+.free-mint-copy h2{letter-spacing:-.035em}
+.free-mint-lead{color:#aebfba}
+.free-mint-stats{gap:10px;margin:20px 0}
+.free-mint-stats div{
+  border-color:#1f3d37;
+  background:#07110f;
+  border-radius:12px;
+}
+.free-mint-tasks{gap:9px}
+.free-mint-task{
+  min-height:64px;
+  border-color:#1f3d37;
+  background:#07110f;
+  border-radius:12px;
+}
+.free-mint-task a{color:#48d9c6}
+.free-mint-claim{
+  min-height:48px;
+  border-radius:12px;
+  box-shadow:none;
+  transition:transform .15s ease,filter .15s ease;
+}
+.free-mint-claim:not(:disabled):hover{transform:translateY(-1px);filter:brightness(1.04)}
+.free-mint-claim:not(:disabled):active{transform:translateY(0) scale(.99)}
+.free-mint-claim:focus-visible,.free-mint-task a:focus-visible{
+  outline:2px solid #48d9c6;
+  outline-offset:3px;
+}
+.free-mint-status{color:#8fa29c}
+.landing-free-callout{box-shadow:none}
+@media(max-width:760px){
+  .free-mint-campaign{padding:24px 20px}
+  .free-mint-task{grid-template-columns:auto 1fr;align-items:start}
+  .free-mint-task a{grid-column:2;justify-self:start}
+}
+@media(max-width:430px){
+  .free-mint-campaign{padding:20px 15px}
+  .free-mint-copy h2{font-size:2.2rem}
+  .free-mint-lead{font-size:.94rem}
+  .free-mint-stats div{padding:12px}
+  .free-mint-task{padding:12px}
+}
